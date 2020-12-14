@@ -44,4 +44,9 @@ public class Position {
     public int hashCode() {
         return y * 100 + x;
     }
+
+    @Override
+    public String toString() {
+        return "(" + x + "," + y + ")";
+    }
 }

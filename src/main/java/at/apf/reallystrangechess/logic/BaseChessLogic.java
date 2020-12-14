@@ -14,7 +14,7 @@ public class BaseChessLogic {
         return board.stream().filter(f -> f.getPosition().equals(pos)).findAny().orElse(new BoardField(pos));
     }
 
-    private Position getBoardDimensions(List<BoardField> board) {
+    public Position getBoardDimensions(List<BoardField> board) {
         int width = board.stream()
                 .max(Comparator.comparingInt(a -> a.getPosition().getX()))
                 .orElse(new BoardField(new Position(0, 0)))
@@ -270,5 +270,43 @@ public class BaseChessLogic {
         return moveableFields;
     }
 
+    public List<BoardField> generateBoard() {
+        List<BoardField> board = new ArrayList<>();
+
+        BoardFieldColor col = BoardFieldColor.BLACK;
+        for (int y = 1; y <= 8; y++) {
+            for (int x = 1; x <= 8; x++) {
+                board.add(new BoardField(new Position(x, y), col, null, null));
+                col = col.flip();
+            }
+            col = col.flip();
+        }
+
+        board.stream().filter(f -> f.getPosition().getX() == 1 && f.getPosition().getY() == 1).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.TURM));
+        board.stream().filter(f -> f.getPosition().getX() == 2 && f.getPosition().getY() == 1).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.SPRINGER));
+        board.stream().filter(f -> f.getPosition().getX() == 3 && f.getPosition().getY() == 1).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.LAUEFER));
+        board.stream().filter(f -> f.getPosition().getX() == 4 && f.getPosition().getY() == 1).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.DAME));
+        board.stream().filter(f -> f.getPosition().getX() == 5 && f.getPosition().getY() == 1).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.KING));
+        board.stream().filter(f -> f.getPosition().getX() == 6 && f.getPosition().getY() == 1).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.LAUEFER));
+        board.stream().filter(f -> f.getPosition().getX() == 7 && f.getPosition().getY() == 1).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.SPRINGER));
+        board.stream().filter(f -> f.getPosition().getX() == 8 && f.getPosition().getY() == 1).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.TURM));
+
+        board.stream().filter(f -> f.getPosition().getX() == 1 && f.getPosition().getY() == 8).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.TURM));
+        board.stream().filter(f -> f.getPosition().getX() == 2 && f.getPosition().getY() == 8).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.SPRINGER));
+        board.stream().filter(f -> f.getPosition().getX() == 3 && f.getPosition().getY() == 8).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.LAUEFER));
+        board.stream().filter(f -> f.getPosition().getX() == 4 && f.getPosition().getY() == 8).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.DAME));
+        board.stream().filter(f -> f.getPosition().getX() == 5 && f.getPosition().getY() == 8).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.KING));
+        board.stream().filter(f -> f.getPosition().getX() == 6 && f.getPosition().getY() == 8).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.LAUEFER));
+        board.stream().filter(f -> f.getPosition().getX() == 7 && f.getPosition().getY() == 8).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.SPRINGER));
+        board.stream().filter(f -> f.getPosition().getX() == 8 && f.getPosition().getY() == 8).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.TURM));
+
+        for (int x = 1; x <= 8; x++) {
+            final int xx = x;
+            board.stream().filter(f -> f.getPosition().getX() == xx && f.getPosition().getY() == 2).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.BAUER));
+            board.stream().filter(f -> f.getPosition().getX() == xx && f.getPosition().getY() == 7).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.BAUER));
+        }
+
+        return board;
+    }
 
 }

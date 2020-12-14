@@ -52,4 +52,9 @@ public class BoardField {
     public void setMine(Integer mine) {
         this.mine = mine;
     }
+
+    @Override
+    public String toString() {
+        return position.toString() + ":" + (figure != null ? figure.toString() : "");
+    }
 }

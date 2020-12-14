@@ -4,6 +4,11 @@ public class Figure {
     private Color color;
     private FigureType type;
 
+    public Figure(Color color, FigureType type) {
+        this.color = color;
+        this.type = type;
+    }
+
     public Color getColor() {
         return color;
     }
@@ -18,5 +23,10 @@ public class Figure {
 
     public void setType(FigureType type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return (color == Color.WHITE ? "W" : "B") + type.getChar();
     }
 }
