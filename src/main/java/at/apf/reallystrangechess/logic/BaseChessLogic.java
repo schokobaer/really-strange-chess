@@ -152,7 +152,43 @@ public class BaseChessLogic {
         return moveableFields;
     }
 
-    private List<BoardField> getMoveableFields(List<BoardField> board, BoardField field) {
+    /**
+     * Returns all fields the figure could move, without respect to beeing in chess or not
+     * @param board
+     * @param field
+     * @return
+     */
+    private List<BoardField> getAllMoveableFields(List<BoardField> board, BoardField field) {
+        List<BoardField> moveableFields = getAllHitableFields(board, field);
+
+        if (field.getFigure() == null || field.getFigure().getType() != FigureType.BAUER) {
+            return moveableFields;
+        }
+
+        Figure fig = field.getFigure();
+        Position dim = getBoardDimensions(board);
+
+        List<BoardField> b = board;
+        if (fig.getColor() == Color.BLACK) {
+            b = revertBoard(board);
+        }
+
+        BoardField upLeft = getField(b, field.getPosition().move(-1, 1));
+        if (upLeft.getColor() != BoardFieldColor.EMPTY && upLeft.getFigure() != null && upLeft.getFigure().getColor() != fig.getColor()) {
+            moveableFields.add(upLeft);
+        }
+        BoardField upRight = getField(b, field.getPosition().move(1, 1));
+        if (upRight.getColor() != BoardFieldColor.EMPTY && upRight.getFigure() != null && upRight.getFigure().getColor() != fig.getColor()) {
+            moveableFields.add(upRight);
+        }
+
+        // Revert again
+        moveableFields = revertBoard(moveableFields);
+
+        return moveableFields;
+    }
+
+    private List<BoardField> getAllHitableFields(List<BoardField> board, BoardField field) {
         List<BoardField> moveableFields = new ArrayList<>();
 
         if (field.getFigure() == null) {
@@ -160,7 +196,7 @@ public class BaseChessLogic {
         }
 
         Figure fig = field.getFigure();
-        Position dimension = getBoardDimensions(board);
+        Position dim = getBoardDimensions(board);
 
         List<BoardField> b = board;
         if (fig.getColor() == Color.BLACK) {
@@ -168,23 +204,9 @@ public class BaseChessLogic {
         }
 
         if (fig.getType() == FigureType.BAUER) {
-            {
-                BoardField up = getField(b, field.getPosition().move(0, 1));
-                if (up.getColor() != BoardFieldColor.EMPTY && up.getFigure() == null) {
-                    moveableFields.add(up);
-                }
-            }
-            {
-                BoardField upLeft = getField(b, field.getPosition().move(-1, 1));
-                if (upLeft.getColor() != BoardFieldColor.EMPTY && upLeft.getFigure() != null && upLeft.getFigure().getColor() != fig.getColor()) {
-                    moveableFields.add(upLeft);
-                }
-            }
-            {
-                BoardField upRight = getField(b, field.getPosition().move(1, 1));
-                if (upRight.getColor() != BoardFieldColor.EMPTY && upRight.getFigure() != null && upRight.getFigure().getColor() != fig.getColor()) {
-                    moveableFields.add(upRight);
-                }
+            BoardField up = getField(b, field.getPosition().move(0, 1));
+            if (up.getColor() != BoardFieldColor.EMPTY && up.getFigure() == null) {
+                moveableFields.add(up);
             }
             if (field.getPosition().getY() <= 2) {
                 BoardField up2 = getField(b, field.getPosition().move(0, 2));
@@ -267,8 +289,46 @@ public class BaseChessLogic {
             }
         }
 
+        // Revert again
+        moveableFields = revertBoard(moveableFields);
+
         return moveableFields;
     }
+
+    private boolean isCheck(List<BoardField> board, Color color) {
+        BoardField kingField = board.stream()
+                .filter(f -> f.getFigure() != null && f.getFigure().getColor() == color
+                        && f.getFigure().getType() == FigureType.KING)
+                .findFirst().get();
+
+        return board.stream()
+                .filter(f -> f.getFigure() != null && f.getFigure().getColor() == color.flip()) // get all oponent figures
+                .map(f -> getAllHitableFields(board, f))
+                .flatMap(f -> f.stream())
+                .filter(f -> f.getPosition().equals(kingField.getPosition()))
+                .findAny().isPresent();
+    }
+
+    private List<BoardField> move(List<BoardField> board, Position from, Position to) {
+        Figure fig = board.stream().filter(f -> f.getPosition().equals(from)).findFirst().orElse(new BoardField(from)).getFigure();
+        return board.stream().map(f -> {
+            if (f.getPosition().equals(from)) {
+                return new BoardField(f.getPosition(), f.getColor(), null, f.getMine());
+            } else if (f.getPosition().equals(to)) {
+                return new BoardField(f.getPosition(), f.getColor(), fig, f.getMine());
+            } else {
+                return f;
+            }
+        }).collect(Collectors.toList());
+    }
+
+    public List<BoardField> getMoveableFields(List<BoardField> board, BoardField field) {
+        // TODO: Implement
+        // castling
+        // isCheck checking for each BoardField
+        return getAllMoveableFields(board, field);
+    }
+
 
     public List<BoardField> generateBoard() {
         List<BoardField> board = new ArrayList<>();
@@ -308,5 +368,7 @@ public class BaseChessLogic {
 
         return board;
     }
+
+
 
 }
