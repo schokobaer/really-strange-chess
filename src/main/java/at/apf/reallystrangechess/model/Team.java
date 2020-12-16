@@ -8,7 +8,7 @@ public class Team {
     private Integer currentPlayer;
     private boolean castlingable;
     private Long time;
-    private List<FigureType> hitFigures = new ArrayList<>();
+    private List<Figure> hitFigures = new ArrayList<>();
 
 
 
@@ -43,4 +43,9 @@ public class Team {
     public void setTime(Long time) {
         this.time = time;
     }
+
+    public List<Figure> getHitFigures() {
+        return hitFigures;
+    }
+
 }

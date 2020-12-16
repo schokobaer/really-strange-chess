@@ -1,6 +1,7 @@
 package at.apf.reallystrangechess.repo;
 
 import at.apf.reallystrangechess.model.Game;
+import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
+@Repository
 public class GameRepo {
 
     private Map<String, Pair<Game, Lock>> store = new HashMap<>();
@@ -33,6 +35,10 @@ public class GameRepo {
         Pair<Game, Lock> p = store.get(id);
         p.second.lock();
         return p.first;
+    }
+
+    public void release(String id) {
+        store.get(id).second.unlock();
     }
 
     public void writeBack(Game game) {

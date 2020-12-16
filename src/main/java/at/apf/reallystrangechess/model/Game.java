@@ -1,17 +1,20 @@
 package at.apf.reallystrangechess.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Game {
 
     private String id;
-    private Team white;
-    private Team black;
+    private Team white = new Team();
+    private Team black = new Team();
     private Color currentTeam;
-    private List<FigureMove> history;
+    private List<FigureMove> history = new ArrayList<>();
     private List<BoardField> board;
     private Date lastMove;
+    private GameState state =GameState.PENDING;
+    // TODO: Add GameResult {winner?: Color, reason?: TIME | CHECKMATE }
 
     public String getId() {
         return id;
@@ -19,6 +22,14 @@ public class Game {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public GameState getState() {
+        return state;
+    }
+
+    public void setState(GameState state) {
+        this.state = state;
     }
 
     public Team getWhite() {

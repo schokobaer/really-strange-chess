@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class BaseChessLogic {
 
 
-    private BoardField getField(List<BoardField> board, Position pos) {
+    public BoardField getField(List<BoardField> board, Position pos) {
         return board.stream().filter(f -> f.getPosition().equals(pos)).findAny().orElse(new BoardField(pos));
     }
 
