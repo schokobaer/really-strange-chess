@@ -7,8 +7,8 @@ import at.apf.reallystrangechess.repo.GameRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,15 +19,37 @@ public class GameService {
     @Autowired
     private GameRepo gameRepo;
 
-    public Game createGame(CreateGameRequest req) {
+    public Game createGame(Player player, Long timeWhite, Long timeBlack, Color color) {
         Game game = new Game();
         game.setCurrentTeam(Color.WHITE);
         game.setState(GameState.PENDING);
         game.setBoard(logic.generateBoard());
+
+        TeamPlayer p = new TeamPlayer();
+        p.setId(player.getId());
+        p.setName(player.getName());
+        p.setOrder(0);
+
+        if (color == Color.WHITE) {
+            game.getWhite().getPlayers().add(p);
+        } else {
+            game.getBlack().getPlayers().add(p);
+        }
+
+        game.getWhite().setTime(timeWhite);
+        game.getBlack().setTime(timeBlack);
+
         gameRepo.add(game);
         return game;
     }
 
+    public Game get(String gameid) {
+        return gameRepo.read(gameid);
+    }
+
+    public List<Game> getOpenGames() {
+        return gameRepo.all().stream().filter(g -> g.getState() == GameState.PENDING).collect(Collectors.toList());
+    }
 
     public void join(String gameid, Player player, Color color) {
         Game game = gameRepo.readLocked(gameid);

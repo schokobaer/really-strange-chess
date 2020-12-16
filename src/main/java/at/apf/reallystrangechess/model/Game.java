@@ -13,7 +13,7 @@ public class Game {
     private List<FigureMove> history = new ArrayList<>();
     private List<BoardField> board;
     private Date lastMove;
-    private GameState state =GameState.PENDING;
+    private GameState state = GameState.PENDING;
     // TODO: Add GameResult {winner?: Color, reason?: TIME | CHECKMATE }
 
     public String getId() {
