@@ -19,6 +19,9 @@ public class GameService {
     @Autowired
     private GameRepo gameRepo;
 
+    @Autowired
+    private NotifyService notifyService;
+
     public Game createGame(Player player, Long timeWhite, Long timeBlack, Color color) {
         Game game = new Game();
         game.setCurrentTeam(Color.WHITE);
@@ -40,6 +43,9 @@ public class GameService {
         game.getBlack().setTime(timeBlack);
 
         gameRepo.add(game);
+
+        notifyService.loungeUpdate();
+
         return game;
     }
 
@@ -71,6 +77,9 @@ public class GameService {
         }
 
         gameRepo.writeBack(game);
+
+        notifyService.loungeUpdate();
+        notifyService.gameUpdate(game);
     }
 
     public void move(String gameid, String playerid, Position from, Position to) {
@@ -135,6 +144,8 @@ public class GameService {
         }
 
         gameRepo.writeBack(game);
+
+        notifyService.gameUpdate(game);
     }
 
     public void undo(String gameid) {
@@ -167,6 +178,8 @@ public class GameService {
         }
 
         gameRepo.writeBack(game);
+
+        notifyService.gameUpdate(game);
     }
 
     public void updateTime(String gameid, String playerid, Long timeWhite, Long timeBlack) {

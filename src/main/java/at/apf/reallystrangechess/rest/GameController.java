@@ -7,6 +7,7 @@ import at.apf.reallystrangechess.mapper.GameMapper;
 import at.apf.reallystrangechess.model.Game;
 import at.apf.reallystrangechess.model.Player;
 import at.apf.reallystrangechess.service.GameService;
+import at.apf.reallystrangechess.service.NotifyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
