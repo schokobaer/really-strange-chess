@@ -1,13 +1,25 @@
 package at.apf.reallystrangechess.model;
 
+import java.util.Date;
 import java.util.List;
 
 public class Game {
+
+    private String id;
     private Team white;
     private Team black;
     private Color currentTeam;
     private List<FigureMove> history;
     private List<BoardField> board;
+    private Date lastMove;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Team getWhite() {
         return white;
@@ -47,5 +59,13 @@ public class Game {
 
     public void setBoard(List<BoardField> board) {
         this.board = board;
+    }
+
+    public Date getLastMove() {
+        return lastMove;
+    }
+
+    public void setLastMove(Date lastMove) {
+        this.lastMove = lastMove;
     }
 }

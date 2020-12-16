@@ -1,12 +1,14 @@
 package at.apf.reallystrangechess.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Team {
-    private List<TeamPlayer> players;
+    private List<TeamPlayer> players = new ArrayList<>();
     private Integer currentPlayer;
     private boolean castlingable;
     private Long time;
+    private List<FigureType> hitFigures = new ArrayList<>();
 
 
 
