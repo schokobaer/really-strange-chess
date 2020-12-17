@@ -300,7 +300,7 @@ public class BaseChessLogic {
                         && f.getFigure().getType() == FigureType.KING)
                 .anyMatch(kingField -> board.stream()
                         .filter(f -> f.getFigure() != null && f.getFigure().getColor() == color.flip()) // get all oponent figures
-                        .map(f -> getAllHitableFields(board, f))
+                        .map(f -> getAllHitableFields(board, f)) // Get all fields the opponent attacks
                         .flatMap(f -> f.stream())
                         .filter(f -> f.getPosition().equals(kingField.getPosition()))
                         .findAny().isPresent());

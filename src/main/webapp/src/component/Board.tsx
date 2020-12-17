@@ -35,6 +35,7 @@ class ChessBoard extends React.Component<Props, State> {
 interface Props {
     fields: Array<BoardField>
     color?: Color
+    canMove: boolean
 }
 interface State {
 

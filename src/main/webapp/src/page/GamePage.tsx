@@ -1,8 +1,9 @@
 import React, { Fragment } from 'react'
 import RestClient from "../rest/RestClient";
 import WebSocketClient from "../rest/WebSocketClient";
-import {GameDto} from "../dto/dtos";
+import {Color, GameDto, TeamPlayerDto} from "../dto/dtos";
 import ChessBoard from "../component/Board";
+import {getUserName} from "../util/GameRepo";
 
 
 class GamePage extends React.Component<Props, State> {
@@ -37,6 +38,30 @@ class GamePage extends React.Component<Props, State> {
         })
     }
 
+    getPlayer() {
+        if (this.state.game) {
+            let player = this.state.game.white.players.find(p => p.name === getUserName())
+            if (player === undefined) {
+                player = this.state.game.black.players.find(p => p.name === getUserName())
+            }
+            if (player) {
+                return player
+            }
+        }
+        return null
+    }
+
+    getTeamColor(): Color | undefined {
+        if (this.state.game) {
+            if (this.state.game.white.players.find(p => p.name === getUserName())) {
+                return "WHITE"
+            }
+            if (this.state.game.black.players.find(p => p.name === getUserName())) {
+                return "BLACK"
+            }
+        }
+    }
+
     render () {
         // No data loaded yet
         if (this.state.loading) {
@@ -44,7 +69,7 @@ class GamePage extends React.Component<Props, State> {
         }
 
         if (this.state.game) {
-            return <ChessBoard fields={this.state.game.board} />
+            return <ChessBoard fields={this.state.game.board} color={this.getTeamColor()} canMove={this.state.game.currentTeam === this.getTeamColor()} />
         }
         
         return <div>Yes</div>
