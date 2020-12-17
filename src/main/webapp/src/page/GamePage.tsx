@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import RestClient from "../rest/RestClient";
 import WebSocketClient from "../rest/WebSocketClient";
 import {GameDto} from "../dto/dtos";
+import ChessBoard from "../component/Board";
 
 
 class GamePage extends React.Component<Props, State> {
@@ -42,6 +43,10 @@ class GamePage extends React.Component<Props, State> {
             return <div>Fetching data ...</div>
         }
 
+        if (this.state.game) {
+            return <ChessBoard fields={this.state.game.board} />
+        }
+        
         return <div>Yes</div>
       
     }
@@ -55,5 +60,5 @@ interface State {
     loading: boolean
     game?: GameDto
 }
-  
+
 export default GamePage;

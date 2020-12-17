@@ -21,7 +21,7 @@ export type Color = 'WHITE' | 'BLACK'
 
 export type GameState = 'PENDING' | 'PLAYING' | 'FINISHED'
 
-export type FigureType = 'BAUER' | 'LAUFER' | 'SPRINGER' | 'TURM' | 'DAME' | 'KOENIG'
+export type FigureType = 'BAUER' | 'LAUFER' | 'SPRINGER' | 'TURM' | 'DAME' | 'KING'
 
 export interface BoardField {
     position: Position

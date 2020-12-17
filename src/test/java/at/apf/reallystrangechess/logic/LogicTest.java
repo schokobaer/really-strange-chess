@@ -94,8 +94,8 @@ public class LogicTest {
     public void testCheck() {
         List<BoardField> board = board4();
         board.stream().filter(f -> f.getPosition().equals(new Position(2, 1))).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.KING));
-        board.stream().filter(f -> f.getPosition().equals(new Position(4, 2))).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.LAUEFER));
-        board.stream().filter(f -> f.getPosition().equals(new Position(3, 3))).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.LAUEFER));
+        board.stream().filter(f -> f.getPosition().equals(new Position(4, 2))).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.LAUFER));
+        board.stream().filter(f -> f.getPosition().equals(new Position(3, 3))).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.LAUFER));
 
         Assert.assertFalse(logic.isCheck(board, Color.WHITE));
 

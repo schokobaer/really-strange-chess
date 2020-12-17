@@ -216,7 +216,7 @@ public class BaseChessLogic {
                     moveableFields.add(right);
                 }
             }
-        } else if (fig.getType() == FigureType.LAUEFER) {
+        } else if (fig.getType() == FigureType.LAUFER) {
             moveableFields.addAll(getLauferMoveableFields(board, field));
         } else if (fig.getType() == FigureType.SPRINGER) {
             BoardField f = getField(board, field.getPosition().move(-1, -2));
@@ -382,19 +382,19 @@ public class BaseChessLogic {
 
         board.stream().filter(f -> f.getPosition().getX() == 1 && f.getPosition().getY() == 1).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.TURM));
         board.stream().filter(f -> f.getPosition().getX() == 2 && f.getPosition().getY() == 1).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.SPRINGER));
-        board.stream().filter(f -> f.getPosition().getX() == 3 && f.getPosition().getY() == 1).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.LAUEFER));
+        board.stream().filter(f -> f.getPosition().getX() == 3 && f.getPosition().getY() == 1).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.LAUFER));
         board.stream().filter(f -> f.getPosition().getX() == 4 && f.getPosition().getY() == 1).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.DAME));
         board.stream().filter(f -> f.getPosition().getX() == 5 && f.getPosition().getY() == 1).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.KING));
-        board.stream().filter(f -> f.getPosition().getX() == 6 && f.getPosition().getY() == 1).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.LAUEFER));
+        board.stream().filter(f -> f.getPosition().getX() == 6 && f.getPosition().getY() == 1).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.LAUFER));
         board.stream().filter(f -> f.getPosition().getX() == 7 && f.getPosition().getY() == 1).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.SPRINGER));
         board.stream().filter(f -> f.getPosition().getX() == 8 && f.getPosition().getY() == 1).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.TURM));
 
         board.stream().filter(f -> f.getPosition().getX() == 1 && f.getPosition().getY() == 8).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.TURM));
         board.stream().filter(f -> f.getPosition().getX() == 2 && f.getPosition().getY() == 8).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.SPRINGER));
-        board.stream().filter(f -> f.getPosition().getX() == 3 && f.getPosition().getY() == 8).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.LAUEFER));
+        board.stream().filter(f -> f.getPosition().getX() == 3 && f.getPosition().getY() == 8).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.LAUFER));
         board.stream().filter(f -> f.getPosition().getX() == 4 && f.getPosition().getY() == 8).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.DAME));
         board.stream().filter(f -> f.getPosition().getX() == 5 && f.getPosition().getY() == 8).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.KING));
-        board.stream().filter(f -> f.getPosition().getX() == 6 && f.getPosition().getY() == 8).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.LAUEFER));
+        board.stream().filter(f -> f.getPosition().getX() == 6 && f.getPosition().getY() == 8).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.LAUFER));
         board.stream().filter(f -> f.getPosition().getX() == 7 && f.getPosition().getY() == 8).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.SPRINGER));
         board.stream().filter(f -> f.getPosition().getX() == 8 && f.getPosition().getY() == 8).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.TURM));
 

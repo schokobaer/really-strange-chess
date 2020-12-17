@@ -2,7 +2,7 @@ package at.apf.reallystrangechess.model;
 
 public enum FigureType {
     BAUER("B"),
-    LAUEFER("L"),
+    LAUFER("L"),
     SPRINGER("S"),
     TURM("T"),
     DAME("D"),

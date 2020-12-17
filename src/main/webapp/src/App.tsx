@@ -7,41 +7,44 @@ import {getUserName, setUserId, setUserName} from "./util/GameRepo";
 
 class App extends React.Component<Props, State> {
 
-  state: State = {
-    gameid: undefined,
-    userName: getUserName()
-  }
-
-  ws: WebSocketClient | null = null
-
-  initWebSockets() {
-    this.ws = new WebSocketClient()
-    this.ws.connect()
-
-  }
-
-  getTableId = () => document.location.hash.length < 2 ? undefined : document.location.hash.substring(1)
-  
-  componentWillMount() {
-
-    this.setState({gameid: this.getTableId()})
-    window.onhashchange = () => {
-      this.setState({gameid: this.getTableId()})
+    state: State = {
+        gameid: undefined,
+        userName: getUserName()
     }
-    if (getUserName()) {
-      this.initWebSockets()
-    }
-  }
 
-  render () {
-   return <div>Hallo Strange Chess</div>
-  }
+    ws: WebSocketClient = new WebSocketClient()
+
+    initWebSockets() {
+        //this.ws.connect()
+
+    }
+
+    getTableId = () => document.location.hash.length < 2 ? undefined : document.location.hash.substring(1)
+
+    componentWillMount() {
+
+        this.setState({gameid: this.getTableId()})
+        window.onhashchange = () => {
+            this.setState({gameid: this.getTableId()})
+        }
+        if (getUserName()) {
+            this.initWebSockets()
+        }
+    }
+
+    render () {
+        if (this.state.gameid) {
+            return <GamePage gameid={this.state.gameid} websocket={this.ws} />
+        }
+
+        return <div>Hallo Strange Chess</div>
+    }
 }
 
 interface Props {}
 interface State {
-  gameid?: string
-  userName: string | null
+    gameid?: string
+    userName: string | null
 }
 
 export default App;
