@@ -65,16 +65,19 @@ public class GameService {
             throw new RuntimeException("Wrong State");
         }
 
+        Team team = color == Color.WHITE ? game.getWhite() : game.getBlack();
+
+        if (team.getPlayers().stream().filter(p -> p.getName().equals(player.getName())).findAny().isPresent()) {
+            gameRepo.release(gameid);
+            throw new RuntimeException("Player already in team");
+        }
+
         TeamPlayer p = new TeamPlayer();
         p.setId(player.getId());
         p.setName(player.getName());
-        if (color == Color.WHITE) {
-            p.setOrder(game.getWhite().getPlayers().size());
-            game.getWhite().getPlayers().add(p);
-        } else {
-            p.setOrder(game.getBlack().getPlayers().size());
-            game.getBlack().getPlayers().add(p);
-        }
+        p.setOrder(team.getPlayers().size());
+        team.getPlayers().add(p);
+
 
         gameRepo.writeBack(game);
 
@@ -107,7 +110,11 @@ public class GameService {
         }
 
         Date now = new Date();
-        if (team.getTime() < now.getTime() - game.getLastMove().getTime()) {
+        Long neededSeconds = 0L;
+        if (game.getLastMove() != null) {
+            neededSeconds = (now.getTime() - game.getLastMove().getTime()) / 1000;
+        }
+        if (team.getTime() != null && team.getTime() <= neededSeconds) {
             game.setState(GameState.FINISHED);
             team.setTime(0L);
             gameRepo.writeBack(game);
@@ -126,11 +133,11 @@ public class GameService {
 
         game.getHistory().add(new FigureMove(source, target)); // Add move to history
         if (target.getFigure() != null) {
-            team.getHitFigures().add(target.getFigure()); // add hitted figure to hitFigures of team
+            team.getHitFigures().add(target.getFigure().getType()); // add hitted figure to hitFigures of team
         }
         game.setBoard(logic.move(game.getBoard(), from, to)); // change board
-        if (game.getLastMove() != null) {
-            team.setTime(Math.max(team.getTime() - (now.getTime() - game.getLastMove().getTime()), 0)); // set remaining time of team
+        if (team.getTime() != null && game.getLastMove() != null) {
+            team.setTime(team.getTime() - neededSeconds); // set remaining time of team
         }
         game.setLastMove(now); // update last move
 
@@ -174,6 +181,7 @@ public class GameService {
         }
         team.setCurrentPlayer( (team.getCurrentPlayer() - 1 + team.getPlayers().size()) % team.getPlayers().size() ); // previous player of previous
         if (team.getTime() > 0) {
+            // played time will stay ereased
             game.setState(GameState.PLAYING); // if game was ended, set it to playing (if the team has remaining time)
         }
 

@@ -27,7 +27,7 @@ public class GameController {
     }
 
     @PostMapping("/api/game/{id}/join")
-    public void join(@PathVariable String id, @CookieValue String playerid, @RequestBody JoinGameRequest req) {
+    public void join(@PathVariable String id, @RequestHeader String playerid, @RequestBody JoinGameRequest req) {
         // Player joins the table
         Player player = new Player();
         player.setId(playerid);
@@ -36,13 +36,13 @@ public class GameController {
     }
 
     @PostMapping("/api/game/{id}/move")
-    public void move(@PathVariable String id, @CookieValue String playerid, @RequestBody MoveRequest req) {
+    public void move(@PathVariable String id, @RequestHeader String playerid, @RequestBody MoveRequest req) {
         // starts on the first mvoe
         gameService.move(id, playerid, req.getFrom(), req.getTo());
     }
 
     @PostMapping("/api/game/{id}/udno")
-    public void undo(@PathVariable String id, @CookieValue String playerid) {
+    public void undo(@PathVariable String id, @RequestHeader String playerid) {
         // undoes the last move
         gameService.undo(id);
     }

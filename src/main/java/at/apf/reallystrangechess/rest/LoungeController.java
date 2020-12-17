@@ -23,7 +23,7 @@ public class LoungeController {
     private GameMapper gameMapper;
 
     @PostMapping("/api/game")
-    public String create(@CookieValue String playerid, @RequestBody CreateGameRequest req) {
+    public String create(@RequestHeader String playerid, @RequestBody CreateGameRequest req) {
         Player player = new Player();
         player.setId(playerid);
         player.setName(req.getName());
@@ -37,4 +37,5 @@ public class LoungeController {
     public List<GameDto> getOpen() {
         return gameService.getOpenGames().stream().map(g -> gameMapper.toDto(g)).collect(Collectors.toList());
     }
+
 }

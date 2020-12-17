@@ -3,8 +3,8 @@ package at.apf.reallystrangechess.dto;
 import at.apf.reallystrangechess.model.Color;
 
 public class CreateGameRequest {
-    private Long timeWhite;
-    private Long timeBlack;
+    private Long timeWhite; // sec
+    private Long timeBlack; // sec
     private Color team;
     private String name;
 

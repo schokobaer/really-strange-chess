@@ -1,7 +1,5 @@
 package at.apf.reallystrangechess.model;
 
-import java.util.Objects;
-
 public class Position {
     private int x;
     private int y;

@@ -5,10 +5,10 @@ import java.util.List;
 
 public class Team {
     private List<TeamPlayer> players = new ArrayList<>();
-    private Integer currentPlayer;
-    private boolean castlingable;
+    private int currentPlayer;
+    private boolean castlingable = true;
     private Long time;
-    private List<Figure> hitFigures = new ArrayList<>();
+    private List<FigureType> hitFigures = new ArrayList<>();
 
 
 
@@ -20,11 +20,11 @@ public class Team {
         this.players = players;
     }
 
-    public Integer getCurrentPlayer() {
+    public int getCurrentPlayer() {
         return currentPlayer;
     }
 
-    public void setCurrentPlayer(Integer currentPlayer) {
+    public void setCurrentPlayer(int currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
 
@@ -44,7 +44,7 @@ public class Team {
         this.time = time;
     }
 
-    public List<Figure> getHitFigures() {
+    public List<FigureType> getHitFigures() {
         return hitFigures;
     }
 
