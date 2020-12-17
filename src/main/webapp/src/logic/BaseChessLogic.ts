@@ -1,4 +1,4 @@
-import {BoardField, Color, Position} from "../dto/dtos";
+import {BoardField, Color, Figure, Position} from "../dto/dtos";
 
 export function posEq(a: Position, b: Position): boolean {
     return a.x === b.x && a.y === b.y
@@ -52,8 +52,11 @@ export class BaseChessLogic {
         let y = field.position.y - 1
         while (x > 0 && y > 0) {
             const f = this.getField(board, {x: x, y: y})
-            if (f.color !== "EMPTY" && (f.figure === null || f.figure.color !== fig.color)) {
+            if (f.color !== "EMPTY" && f.figure === null) {
                 result.push(f)
+            } else if (f.color !== "EMPTY" && f.figure !== null && f.figure.color !== fig.color) {
+                result.push(f)
+                break;
             } else {
                 break;
             }
@@ -65,8 +68,11 @@ export class BaseChessLogic {
         y = field.position.y - 1
         while (x <= dim.x && y > 0) {
             const f = this.getField(board, {x: x, y: y})
-            if (f.color !== "EMPTY" && (f.figure === null || f.figure.color !== fig.color)) {
+            if (f.color !== "EMPTY" && f.figure === null) {
                 result.push(f)
+            } else if (f.color !== "EMPTY" && f.figure !== null && f.figure.color !== fig.color) {
+                result.push(f)
+                break;
             } else {
                 break;
             }
@@ -78,8 +84,11 @@ export class BaseChessLogic {
         y = field.position.y + 1
         while (x > 0 && y <= dim.y) {
             const f = this.getField(board, {x: x, y: y})
-            if (f.color !== "EMPTY" && (f.figure === null || f.figure.color !== fig.color)) {
+            if (f.color !== "EMPTY" && f.figure === null) {
                 result.push(f)
+            } else if (f.color !== "EMPTY" && f.figure !== null && f.figure.color !== fig.color) {
+                result.push(f)
+                break;
             } else {
                 break;
             }
@@ -91,8 +100,11 @@ export class BaseChessLogic {
         y = field.position.y + 1
         while (x <= dim.x && y <= dim.y) {
             const f = this.getField(board, {x: x, y: y})
-            if (f.color !== "EMPTY" && (f.figure === null || f.figure.color !== fig.color)) {
+            if (f.color !== "EMPTY" && f.figure === null) {
                 result.push(f)
+            } else if (f.color !== "EMPTY" && f.figure !== null && f.figure.color !== fig.color) {
+                result.push(f)
+                break;
             } else {
                 break;
             }
@@ -111,8 +123,11 @@ export class BaseChessLogic {
         let x = field.position.x - 1
         while (x > 0) {
             const f = this.getField(board, {x: x, y: field.position.y})
-            if (f.color !== "EMPTY" && (f.figure === null || f.figure.color !== fig.color)) {
+            if (f.color !== "EMPTY" && f.figure === null) {
                 result.push(f)
+            } else if (f.color !== "EMPTY" && f.figure !== null && f.figure.color !== fig.color) {
+                result.push(f)
+                break;
             } else {
                 break;
             }
@@ -120,10 +135,13 @@ export class BaseChessLogic {
         }
 
         x = field.position.x + 1
-        while (x < dim.x) {
+        while (x <= dim.x) {
             const f = this.getField(board, {x: x, y: field.position.y})
-            if (f.color !== "EMPTY" && (f.figure === null || f.figure.color !== fig.color)) {
+            if (f.color !== "EMPTY" && f.figure === null) {
                 result.push(f)
+            } else if (f.color !== "EMPTY" && f.figure !== null && f.figure.color !== fig.color) {
+                result.push(f)
+                break;
             } else {
                 break;
             }
@@ -133,8 +151,11 @@ export class BaseChessLogic {
         let y = field.position.y - 1
         while (y > 0) {
             const f = this.getField(board, {x: field.position.x, y: y})
-            if (f.color !== "EMPTY" && (f.figure === null || f.figure.color !== fig.color)) {
+            if (f.color !== "EMPTY" && f.figure === null) {
                 result.push(f)
+            } else if (f.color !== "EMPTY" && f.figure !== null && f.figure.color !== fig.color) {
+                result.push(f)
+                break;
             } else {
                 break;
             }
@@ -142,10 +163,13 @@ export class BaseChessLogic {
         }
 
         y = field.position.y + 1
-        while (y < dim.y) {
+        while (y <= dim.y) {
             const f = this.getField(board, {x: field.position.x, y: y})
-            if (f.color !== "EMPTY" && (f.figure === null || f.figure.color !== fig.color)) {
+            if (f.color !== "EMPTY" && f.figure === null) {
                 result.push(f)
+            } else if (f.color !== "EMPTY" && f.figure !== null && f.figure.color !== fig.color) {
+                result.push(f)
+                break;
             } else {
                 break;
             }
@@ -314,7 +338,7 @@ export class BaseChessLogic {
                 board.filter(f => f.figure !== null && f.figure.color === colFlip(color))
                     .map(f => this.hitableFields(board, f))
                     .flat()
-                    .find(f => posEq(f.position, kingfield.position))
+                    .filter(f => posEq(f.position, kingfield.position)).length > 0
             )
     }
 
@@ -343,12 +367,16 @@ export class BaseChessLogic {
             if (posEq(f.position, from)) {
                 return {position: from, color: f.color, figure: null, mine: f.mine}
             } else if (posEq(f.position, to)) {
-                if (fig !== null && fig.type === "BAUER"
-                    && (fig.color === "WHITE" && to.y === dim.y
-                        || fig.color === "BLACK" && to.y === 1)) {
-                    fig.type = "DAME"
+                let figNew: Figure | null = null
+                if (fig !== null) {
+                    figNew = {type: fig.type, color: fig.color}
                 }
-                return {position: f.position, color: f.color, figure: fig, mine: f.mine}
+                if (figNew !== null && figNew.type === "BAUER"
+                    && (figNew.color === "WHITE" && to.y === dim.y
+                        || figNew.color === "BLACK" && to.y === 1)) {
+                    figNew.type = "DAME"
+                }
+                return {position: f.position, color: f.color, figure: figNew, mine: f.mine}
             }
             return f
         })

@@ -1,9 +1,10 @@
 import React, { Fragment } from 'react'
 import RestClient from "../rest/RestClient";
 import WebSocketClient from "../rest/WebSocketClient";
-import {Color, GameDto, TeamPlayerDto} from "../dto/dtos";
+import {Color, GameDto, TeamPlayerDto, Position, MoveRequest} from "../dto/dtos";
 import ChessBoard from "../component/Board";
-import {getUserName} from "../util/GameRepo";
+import {getUserId, getUserName} from "../util/GameRepo";
+import {BaseChessLogic, colFlip} from "../logic/BaseChessLogic";
 
 
 class GamePage extends React.Component<Props, State> {
@@ -12,6 +13,7 @@ class GamePage extends React.Component<Props, State> {
         loading: true
     }
 
+    logic = new BaseChessLogic()
     rest: RestClient = new RestClient()
     bcc: BroadcastChannel = new BroadcastChannel('game')
 
@@ -51,6 +53,28 @@ class GamePage extends React.Component<Props, State> {
         return null
     }
 
+    makeMove(from: Position, to: Position) {
+        console.log('Mode made')
+        console.log('from', from)
+        console.log('to', to)
+        const req: MoveRequest = {
+            from: from,
+            to: to
+        }
+        this.rest.move(this.props.gameid, getUserId()!, req)
+        const game = this.state.game!
+        const fromField = this.logic.getField(game.board, from)
+        const toField = this.logic.getField(game.board, to)
+        game.currentTeam = colFlip(game.currentTeam)
+        game.board = this.logic.move(game.board, from, to)
+        game.lastMove = {
+            time: new Date(),
+            from: fromField,
+            to: toField
+        }
+        this.setState({game: game})
+    }
+
     getTeamColor(): Color | undefined {
         if (this.state.game) {
             if (this.state.game.white.players.find(p => p.name === getUserName())) {
@@ -62,6 +86,23 @@ class GamePage extends React.Component<Props, State> {
         }
     }
 
+    isCastlingable(): boolean {
+        return this.getTeamColor() === "WHITE" ? this.state.game!.white.castlingable :
+            this.getTeamColor() === "BLACK" ? this.state.game!.black.castlingable : false
+    }
+
+    canMove(): boolean {
+        if (this.state.game!.state === "FINISHED" || this.state.game!.currentTeam !== this.getTeamColor()) {
+            return false
+        }
+        const team = this.getTeamColor() === "WHITE" ? this.state.game!.white :
+                     this.getTeamColor() === "BLACK" ? this.state.game!.black : null
+        if (team === null || this.getPlayer() === undefined || team.curPlayer !== this.getPlayer()!.order) {
+            return false
+        }
+        return true
+    }
+
     render () {
         // No data loaded yet
         if (this.state.loading) {
@@ -69,7 +110,13 @@ class GamePage extends React.Component<Props, State> {
         }
 
         if (this.state.game) {
-            return <ChessBoard fields={this.state.game.board} color={this.getTeamColor()} canMove={this.state.game.currentTeam === this.getTeamColor()} />
+            return <ChessBoard
+                castlingable={this.isCastlingable()}
+                lastMove={this.state.game.lastMove}
+                onMove={(from: Position, to: Position) => this.makeMove(from, to)}
+                fields={this.state.game.board}
+                color={this.getTeamColor()}
+                canMove={this.canMove()} />
         }
         
         return <div>Yes</div>

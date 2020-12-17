@@ -36,8 +36,11 @@ public class BaseChessLogic {
         int y = field.getPosition().getY() - 1;
         while (x > 0 && y > 0) {
             BoardField f = getField(b, new Position(x, y));
-            if (f.getColor() != BoardFieldColor.EMPTY && (f.getFigure() == null || f.getFigure().getColor() != fig.getColor())) {
+            if (f.getColor() != BoardFieldColor.EMPTY && f.getFigure() == null) {
                 moveableFields.add(f);
+            } else if (f.getColor() != BoardFieldColor.EMPTY && f.getFigure() != null && f.getFigure().getColor() != fig.getColor()) {
+                moveableFields.add(f);
+                break;
             } else {
                 break;
             }
@@ -48,8 +51,11 @@ public class BaseChessLogic {
         y = field.getPosition().getY() - 1;
         while (x <= dimension.getX() && y > 0) {
             BoardField f = getField(b, new Position(x, y));
-            if (f.getColor() != BoardFieldColor.EMPTY && (f.getFigure() == null || f.getFigure().getColor() != fig.getColor())) {
+            if (f.getColor() != BoardFieldColor.EMPTY && f.getFigure() == null) {
                 moveableFields.add(f);
+            } else if (f.getColor() != BoardFieldColor.EMPTY && f.getFigure() != null && f.getFigure().getColor() != fig.getColor()) {
+                moveableFields.add(f);
+                break;
             } else {
                 break;
             }
@@ -60,8 +66,11 @@ public class BaseChessLogic {
         y = field.getPosition().getY() + 1;
         while (x > 0 && y <= dimension.getY()) {
             BoardField f = getField(b, new Position(x, y));
-            if (f.getColor() != BoardFieldColor.EMPTY && (f.getFigure() == null || f.getFigure().getColor() != fig.getColor())) {
+            if (f.getColor() != BoardFieldColor.EMPTY && f.getFigure() == null) {
                 moveableFields.add(f);
+            } else if (f.getColor() != BoardFieldColor.EMPTY && f.getFigure() != null && f.getFigure().getColor() != fig.getColor()) {
+                moveableFields.add(f);
+                break;
             } else {
                 break;
             }
@@ -72,8 +81,11 @@ public class BaseChessLogic {
         y = field.getPosition().getY() + 1;
         while (x <= dimension.getX() && y <= dimension.getY()) {
             BoardField f = getField(b, new Position(x, y));
-            if (f.getColor() != BoardFieldColor.EMPTY && (f.getFigure() == null || f.getFigure().getColor() != fig.getColor())) {
+            if (f.getColor() != BoardFieldColor.EMPTY && f.getFigure() == null) {
                 moveableFields.add(f);
+            } else if (f.getColor() != BoardFieldColor.EMPTY && f.getFigure() != null && f.getFigure().getColor() != fig.getColor()) {
+                moveableFields.add(f);
+                break;
             } else {
                 break;
             }
@@ -94,8 +106,11 @@ public class BaseChessLogic {
         int y = field.getPosition().getY();
         while (x > 0) {
             BoardField f = getField(b, new Position(x, y));
-            if (f.getColor() != BoardFieldColor.EMPTY && (f.getFigure() == null || f.getFigure().getColor() != fig.getColor())) {
+            if (f.getColor() != BoardFieldColor.EMPTY && f.getFigure() == null) {
                 moveableFields.add(f);
+            } else if (f.getColor() != BoardFieldColor.EMPTY && f.getFigure() != null && f.getFigure().getColor() != fig.getColor()) {
+                moveableFields.add(f);
+                break;
             } else {
                 break;
             }
@@ -105,8 +120,11 @@ public class BaseChessLogic {
         y = field.getPosition().getY();
         while (x <= dimension.getX()) {
             BoardField f = getField(b, new Position(x, y));
-            if (f.getColor() != BoardFieldColor.EMPTY && (f.getFigure() == null || f.getFigure().getColor() != fig.getColor())) {
+            if (f.getColor() != BoardFieldColor.EMPTY && f.getFigure() == null) {
                 moveableFields.add(f);
+            } else if (f.getColor() != BoardFieldColor.EMPTY && f.getFigure() != null && f.getFigure().getColor() != fig.getColor()) {
+                moveableFields.add(f);
+                break;
             } else {
                 break;
             }
@@ -116,8 +134,11 @@ public class BaseChessLogic {
         y = field.getPosition().getY() - 1;
         while (y > 0) {
             BoardField f = getField(b, new Position(x, y));
-            if (f.getColor() != BoardFieldColor.EMPTY && (f.getFigure() == null || f.getFigure().getColor() != fig.getColor())) {
+            if (f.getColor() != BoardFieldColor.EMPTY && f.getFigure() == null) {
                 moveableFields.add(f);
+            } else if (f.getColor() != BoardFieldColor.EMPTY && f.getFigure() != null && f.getFigure().getColor() != fig.getColor()) {
+                moveableFields.add(f);
+                break;
             } else {
                 break;
             }
@@ -127,8 +148,11 @@ public class BaseChessLogic {
         y = field.getPosition().getY() + 1;
         while (y <= dimension.getY()) {
             BoardField f = getField(b, new Position(x, y));
-            if (f.getColor() != BoardFieldColor.EMPTY && (f.getFigure() == null || f.getFigure().getColor() != fig.getColor())) {
+            if (f.getColor() != BoardFieldColor.EMPTY && f.getFigure() == null) {
                 moveableFields.add(f);
+            } else if (f.getColor() != BoardFieldColor.EMPTY && f.getFigure() != null && f.getFigure().getColor() != fig.getColor()) {
+                moveableFields.add(f);
+                break;
             } else {
                 break;
             }

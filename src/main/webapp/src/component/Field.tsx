@@ -48,8 +48,13 @@ class ChessField extends React.Component<Props, State> {
                            this.props.field.color === "BLACK" ? "field-black" :
                            "field-empty"
 
-        return <div className={'field ' + fieldColor}>
-                   <div className={'fieldselect'}>
+        let selectField =   this.props.selected === true ? ' fieldselected' :
+                            this.props.danger === true ? ' fielddanger' :
+                            this.props.hint === true ? ' fieldhint' :
+                            this.props.lastMove === true ? ' fieldlastmove' : '';
+
+        return <div className={'field ' + fieldColor} onClick={() => this.props.onClick(this.props.field)}>
+                   <div className={'fieldselect' + selectField}>
                        <img src={this.getFigure()} />
                    </div>
                </div>
@@ -62,6 +67,7 @@ interface Props {
     danger?: boolean
     hint?: boolean
     lastMove?: boolean
+    onClick: (field: BoardField) => void
 }
 interface State {
 
