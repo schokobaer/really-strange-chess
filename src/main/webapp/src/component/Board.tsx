@@ -58,16 +58,20 @@ class ChessBoard extends React.Component<Props, State> {
         const hints = this.state.selected ? this.logic.moveableFields(this.props.fields, this.state.selected, this.props.castlingable) : []
 
         const rows = []
-        if (this.props.color === "BLACK") {
-            for (let i = 1; i <= 8; i++) {
-                const curRowFields = this.props.fields.filter(f => f.position.y === i).sort((a, b) => a.position.x - b.position.x)
-                rows.push(<div className={'chessrow'}>{curRowFields.map(f => <ChessField hint={this.containsField(hints, f)} danger={this.containsField(kingsInDanger, f)} lastMove={this.involvedInLastMove(f)} selected={this.state.selected === f} field={f} onClick={(f: BoardField) => this.fieldClick(f)} />)}</div>)
+        const dim = this.logic.boardDimensions(this.props.fields)
+        const iy0 = this.props.color === "BLACK" ? 1 : dim.y
+        const iyn = this.props.color === "BLACK" ? dim.y + 1 : 0
+        const inc = this.props.color === "BLACK" ? 1 : -1
+        const ix0 = this.props.color === "BLACK" ? 1 : dim.x
+        const ixn = this.props.color === "BLACK" ? dim.x + 1 : 0
+        for (let y = iy0; y !== iyn; y += inc) {
+            const curRowFields = []
+            for (let x = ix0; x !== ixn; x += inc) {
+                const f = this.logic.getField(this.props.fields, {x: x, y: y})
+                curRowFields.push(f)
             }
-        } else {
-            for (let i = 8; i >= 1; i--) {
-                const curRowFields = this.props.fields.filter(f => f.position.y === i).sort((a, b) => b.position.x - a.position.x)
-                rows.push(<div className={'chessrow'}>{curRowFields.map(f => <ChessField hint={this.containsField(hints, f)} danger={this.containsField(kingsInDanger, f)} lastMove={this.involvedInLastMove(f)} selected={this.state.selected === f} field={f} onClick={(f: BoardField) => this.fieldClick(f)} />)}</div>)
-            }
+            //const curRowFields = this.props.fields.filter(f => f.position.y === i).sort((a, b) => a.position.x - b.position.x)
+            rows.push(<div className={'chessrow'}>{curRowFields.map(f => <ChessField hint={this.containsField(hints, f)} danger={this.containsField(kingsInDanger, f)} lastMove={this.involvedInLastMove(f)} selected={this.state.selected === f} field={f} onClick={(f: BoardField) => this.fieldClick(f)} />)}</div>)
         }
 
         return <div className='boardbox'>

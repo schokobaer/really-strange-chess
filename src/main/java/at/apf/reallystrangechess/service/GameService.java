@@ -26,7 +26,7 @@ public class GameService {
         Game game = new Game();
         game.setCurrentTeam(Color.WHITE);
         game.setState(GameState.PENDING);
-        game.setBoard(logic.generateBoard());
+        game.setBoard(logic.generate5x5WithCorners());
 
         TeamPlayer p = new TeamPlayer();
         p.setId(player.getId());

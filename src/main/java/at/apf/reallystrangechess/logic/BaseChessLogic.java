@@ -431,6 +431,54 @@ public class BaseChessLogic {
         return board;
     }
 
+    public List<BoardField> generate5x5WithCorners() {
+        List<BoardField> board = new ArrayList<>();
+        BoardFieldColor col = BoardFieldColor.BLACK;
+        for (int y = 2; y <= 6; y++) {
+            for (int x = 2; x <= 6; x++) {
+                board.add(new BoardField(new Position(x, y), col, null, null));
+                col = col.flip();
+            }
+        }
+
+        board.add(new BoardField(new Position(3, 1), BoardFieldColor.BLACK, null, null));
+        board.add(new BoardField(new Position(5, 1), BoardFieldColor.BLACK, null, null));
+        board.add(new BoardField(new Position(1, 3), BoardFieldColor.BLACK, null, null));
+        board.add(new BoardField(new Position(7, 3), BoardFieldColor.BLACK, null, null));
+        board.add(new BoardField(new Position(1, 5), BoardFieldColor.BLACK, null, null));
+        board.add(new BoardField(new Position(7, 5), BoardFieldColor.BLACK, null, null));
+        board.add(new BoardField(new Position(3, 7), BoardFieldColor.BLACK, null, null));
+        board.add(new BoardField(new Position(5, 7), BoardFieldColor.BLACK, null, null));
+
+
+        board.stream().filter(f -> f.getPosition().equals(new Position(2, 2))).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.LAUFER));
+        board.stream().filter(f -> f.getPosition().equals(new Position(3, 2))).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.TURM));
+        board.stream().filter(f -> f.getPosition().equals(new Position(4, 2))).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.KING));
+        board.stream().filter(f -> f.getPosition().equals(new Position(5, 2))).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.TURM));
+        board.stream().filter(f -> f.getPosition().equals(new Position(6, 2))).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.LAUFER));
+        board.stream().filter(f -> f.getPosition().equals(new Position(1, 3))).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.BAUER));
+        board.stream().filter(f -> f.getPosition().equals(new Position(2, 3))).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.SPRINGER));
+        board.stream().filter(f -> f.getPosition().equals(new Position(3, 3))).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.BAUER));
+        board.stream().filter(f -> f.getPosition().equals(new Position(4, 3))).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.BAUER));
+        board.stream().filter(f -> f.getPosition().equals(new Position(5, 3))).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.BAUER));
+        board.stream().filter(f -> f.getPosition().equals(new Position(6, 3))).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.SPRINGER));
+        board.stream().filter(f -> f.getPosition().equals(new Position(7, 3))).findFirst().get().setFigure(new Figure(Color.WHITE, FigureType.BAUER));
+
+        board.stream().filter(f -> f.getPosition().equals(new Position(2, 6))).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.LAUFER));
+        board.stream().filter(f -> f.getPosition().equals(new Position(3, 6))).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.TURM));
+        board.stream().filter(f -> f.getPosition().equals(new Position(4, 6))).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.KING));
+        board.stream().filter(f -> f.getPosition().equals(new Position(5, 6))).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.TURM));
+        board.stream().filter(f -> f.getPosition().equals(new Position(6, 6))).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.LAUFER));
+        board.stream().filter(f -> f.getPosition().equals(new Position(1, 5))).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.BAUER));
+        board.stream().filter(f -> f.getPosition().equals(new Position(2, 5))).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.SPRINGER));
+        board.stream().filter(f -> f.getPosition().equals(new Position(3, 5))).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.BAUER));
+        board.stream().filter(f -> f.getPosition().equals(new Position(4, 5))).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.BAUER));
+        board.stream().filter(f -> f.getPosition().equals(new Position(5, 5))).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.BAUER));
+        board.stream().filter(f -> f.getPosition().equals(new Position(6, 5))).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.SPRINGER));
+        board.stream().filter(f -> f.getPosition().equals(new Position(7, 5))).findFirst().get().setFigure(new Figure(Color.BLACK, FigureType.BAUER));
+
+        return board;
+    }
 
 
 }
