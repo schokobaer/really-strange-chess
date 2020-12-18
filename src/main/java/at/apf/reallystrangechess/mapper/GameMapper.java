@@ -42,7 +42,7 @@ public class GameMapper {
 
         if (!game.getHistory().isEmpty()) {
             FigureMove lastMove = game.getHistory().get(game.getHistory().size() - 1);
-            g.setLastMove(new FigureMoveDto(lastMove.getFrom(), lastMove.getTo(), game.getLastMove()));
+            g.setLastMove(new FigureMoveDto(lastMove.getFrom(), lastMove.getTo(), game.getLastMove().getTime()));
         }
 
         g.setBoard(game.getBoard());

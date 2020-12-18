@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import RestClient from "../rest/RestClient";
 import WebSocketClient from "../rest/WebSocketClient";
-import {Color, GameDto, TeamPlayerDto, Position, MoveRequest} from "../dto/dtos";
+import {Color, GameDto, TeamPlayerDto, Position, MoveRequest, TeamDto} from "../dto/dtos";
 import ChessBoard from "../component/Board";
 import {getUserId, getUserName} from "../util/GameRepo";
 import {BaseChessLogic, colFlip} from "../logic/BaseChessLogic";
@@ -43,13 +43,12 @@ class GamePage extends React.Component<Props, State> {
         if (this.state.game) {
             if (this.state.game.state === "PLAYING") {
                 const game = this.state.game
-                const team = game.currentTeam === "WHITE" ? game.white : game.black
-                if (team.time !== null) {
-                    team.time--;
-                    if (team.time === 0) {
-                        this.reportTimeout()
-                    }
+
+                if (this.getTeamColor() === "WHITE" && this.calcTime(game.white) === 0
+                    || this.getTeamColor() === "BLACK" && this.calcTime(game.black) === 0) {
+                    this.reportTimeout()
                 }
+
                 this.setState({game: game})
             }
         }
@@ -94,7 +93,7 @@ class GamePage extends React.Component<Props, State> {
         game.currentTeam = colFlip(game.currentTeam)
         game.board = this.logic.move(game.board, from, to)
         game.lastMove = {
-            time: new Date(),
+            time: new Date().getTime(),
             from: fromField,
             to: toField
         }
@@ -133,6 +132,44 @@ class GamePage extends React.Component<Props, State> {
 
     }
 
+    calcTime(team: TeamDto): number | null{
+
+        if (team.time === null) {
+            return null
+        }
+
+        if (this.state.game!.state !== "PLAYING") {
+            return team.time
+        }
+
+        if (!this.isInCharge(team)) {
+            return team.time
+        }
+
+        if (this.state.game!.lastMove === null) {
+            return team.time
+        }
+
+        const now = new Date()
+        const ereased = Math.floor((now.getTime() - this.state.game!.lastMove.time) / 1000)
+        return Math.max(team.time - ereased, 0)
+    }
+
+    isInCharge(team: TeamDto): boolean {
+        const game = this.state.game!
+        if (game.state === "FINISHED") {
+            return false
+        }
+
+        if (game.state === "PENDING") {
+            return game.white === team && game.black.players.length > 0 && game.white.players.length > 0
+        }
+
+        // Playing
+        return (game.currentTeam === "WHITE" && game.white === team
+            || game.currentTeam === "BLACK" && game.black === team)
+    }
+
     render () {
         // No data loaded yet
         if (this.state.loading) {
@@ -149,9 +186,9 @@ class GamePage extends React.Component<Props, State> {
         return <Fragment>
             <ChessTeam
                 players={teamTop.players}
-                time={teamTop.time}
+                time={this.calcTime(teamTop)}
                 currentPlayer={teamTop.curPlayer}
-                inCharge={!this.canMove()}
+                inCharge={this.isInCharge(teamTop)}
                 onJoin={() => this.join("BLACK")} />
 
             <ChessBoard
@@ -164,9 +201,9 @@ class GamePage extends React.Component<Props, State> {
 
             <ChessTeam
                 players={teamBottom.players}
-                time={teamBottom.time}
+                time={this.calcTime(teamBottom)}
                 currentPlayer={teamBottom.curPlayer}
-                inCharge={!this.canMove()}
+                inCharge={this.isInCharge(teamBottom)}
                 onJoin={() => this.join("BLACK")} />
         </Fragment>
 

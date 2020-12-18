@@ -10,7 +10,7 @@ class ChessTeam extends React.Component<Props, State> {
     }
 
     timeToWatch(total: number): string {
-        let min = Math.round(total / 60)
+        let min = Math.floor(total / 60)
         let rest = total % 60
         let sec = rest < 10 ? "0" + rest : rest
         return min + ':' + sec

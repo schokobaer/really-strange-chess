@@ -8,12 +8,12 @@ public class FigureMoveDto {
 
     private BoardField from;
     private BoardField to;
-    private Date time;
+    private long time;
 
     public FigureMoveDto() {
     }
 
-    public FigureMoveDto(BoardField from, BoardField to, Date time) {
+    public FigureMoveDto(BoardField from, BoardField to, long time) {
         this.from = from;
         this.to = to;
         this.time = time;
@@ -35,11 +35,11 @@ public class FigureMoveDto {
         this.to = to;
     }
 
-    public Date getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(long time) {
         this.time = time;
     }
 }

@@ -43,7 +43,7 @@ export interface Figure {
 export interface FigureMoveDto {
     from: BoardField
     to: BoardField
-    time: Date
+    time: number
 }
 
 export interface TeamPlayerDto {
