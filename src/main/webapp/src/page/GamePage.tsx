@@ -5,6 +5,7 @@ import {Color, GameDto, TeamPlayerDto, Position, MoveRequest} from "../dto/dtos"
 import ChessBoard from "../component/Board";
 import {getUserId, getUserName} from "../util/GameRepo";
 import {BaseChessLogic, colFlip} from "../logic/BaseChessLogic";
+import ChessTeam from "../component/Team";
 
 
 class GamePage extends React.Component<Props, State> {
@@ -13,6 +14,7 @@ class GamePage extends React.Component<Props, State> {
         loading: true
     }
 
+    timer: number = 0
     logic = new BaseChessLogic()
     rest: RestClient = new RestClient()
     bcc: BroadcastChannel = new BroadcastChannel('game')
@@ -28,11 +30,31 @@ class GamePage extends React.Component<Props, State> {
         }
 
         this.loadGame()
+
+        this.timer = window.setInterval(() => this.countdown(), 1000);
     }
 
     componentWillUnmount() {
         this.bcc.close()
+        window.clearInterval(this.timer)
     }
+
+    countdown() {
+        if (this.state.game) {
+            if (this.state.game.state === "PLAYING") {
+                const game = this.state.game
+                const team = game.currentTeam === "WHITE" ? game.white : game.black
+                if (team.time !== null) {
+                    team.time--;
+                    if (team.time === 0) {
+                        this.reportTimeout()
+                    }
+                }
+                this.setState({game: game})
+            }
+        }
+    }
+
 
     loadGame() {
         this.rest.getGame(this.props.gameid).then(game => {
@@ -51,6 +73,10 @@ class GamePage extends React.Component<Props, State> {
             }
         }
         return null
+    }
+
+    reportTimeout() {
+        this.rest.timeout(this.props.gameid, getUserId()!)
     }
 
     makeMove(from: Position, to: Position) {
@@ -103,23 +129,47 @@ class GamePage extends React.Component<Props, State> {
         return true
     }
 
+    join(color: Color) {
+
+    }
+
     render () {
         // No data loaded yet
         if (this.state.loading) {
             return <div>Fetching data ...</div>
         }
 
-        if (this.state.game) {
-            return <ChessBoard
+        if (this.state.game === undefined) {
+            return <div>No game found</div>
+        }
+
+        const teamTop = this.getTeamColor() === "WHITE" ? this.state.game.black : this.state.game.white
+        const teamBottom = this.getTeamColor() === "WHITE" ? this.state.game.white : this.state.game.black
+
+        return <Fragment>
+            <ChessTeam
+                players={teamTop.players}
+                time={teamTop.time}
+                currentPlayer={teamTop.curPlayer}
+                inCharge={!this.canMove()}
+                onJoin={() => this.join("BLACK")} />
+
+            <ChessBoard
                 castlingable={this.isCastlingable()}
                 lastMove={this.state.game.lastMove}
                 onMove={(from: Position, to: Position) => this.makeMove(from, to)}
                 fields={this.state.game.board}
                 color={this.getTeamColor()}
                 canMove={this.canMove()} />
-        }
-        
-        return <div>Yes</div>
+
+            <ChessTeam
+                players={teamBottom.players}
+                time={teamBottom.time}
+                currentPlayer={teamBottom.curPlayer}
+                inCharge={!this.canMove()}
+                onJoin={() => this.join("BLACK")} />
+        </Fragment>
+
       
     }
 }

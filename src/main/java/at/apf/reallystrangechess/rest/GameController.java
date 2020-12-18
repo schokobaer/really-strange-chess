@@ -47,4 +47,10 @@ public class GameController {
         gameService.undo(id);
     }
 
+    @PostMapping("/api/game/{id}/timeout")
+    public void timeout(@PathVariable String id, @RequestHeader String playerid) {
+        // undoes the last move
+        gameService.reportTimeout(id);
+    }
+
 }

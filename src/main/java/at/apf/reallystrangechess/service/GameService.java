@@ -194,4 +194,33 @@ public class GameService {
         // sets the times for each team and sets the state to playing
     }
 
+    public void reportTimeout(String gameid) {
+        Game game = gameRepo.readLocked(gameid);
+
+        if (game.getState() != GameState.PLAYING) {
+            gameRepo.release(gameid);
+            throw new RuntimeException("Game is finished");
+        }
+
+        Team team = game.getCurrentTeam() == Color.WHITE ? game.getWhite() : game.getBlack();
+        if (team.getTime() == null) {
+            gameRepo.release(gameid);
+            throw new RuntimeException("Game is not timed");
+        }
+
+        Date now = new Date();
+        Long neededSeconds = 0L;
+        if (game.getLastMove() != null) {
+            neededSeconds = (now.getTime() - game.getLastMove().getTime()) / 1000;
+        }
+        if (team.getTime() != null && team.getTime() <= neededSeconds) {
+            game.setState(GameState.FINISHED);
+            team.setTime(0L);
+        }
+
+        gameRepo.writeBack(game);
+
+        notifyService.gameUpdate(game);
+    }
+
 }

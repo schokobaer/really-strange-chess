@@ -90,4 +90,16 @@ export default class RestClient {
             throw 'Could not make move'
         })
     }
+
+    timeout(gameid: string, playerid: string) : Promise<any> {
+        return fetch(`${api}/${gameid}/timeout`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'playerid': playerid
+            },
+            cache: 'no-cache'
+        })
+    }
 }

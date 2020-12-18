@@ -1,0 +1,30 @@
+.teamCt {
+    margin: 20px 0px 20px 0px;
+    /*box-shadow: 0px 0px 10px 10px rgba(68,68,68,0.7);*/
+    /*background-image: url('../texture/woodbars.jpeg');*/
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.teamCt > div {
+    width: 100%;
+}
+
+.teamplayer {
+    font-size: 24px;
+}
+
+.timewatch {
+    font-size: 64px;
+    font-family: AlarmClock;
+}
+
+.active {
+    color: red;
+}
+
+.inactive {
+    opacity: 0.5;
+}
