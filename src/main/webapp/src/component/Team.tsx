@@ -1,6 +1,8 @@
 import React, { Fragment } from 'react'
-import {BoardField, Color, TeamPlayerDto} from "../dto/dtos";
+import {BoardField, Color, Figure, FigureType, TeamPlayerDto} from "../dto/dtos";
 import './Team.css'
+import {getFigureImgPath} from "../util/utils";
+import Button from "react-bootstrap/Button";
 
 
 class ChessTeam extends React.Component<Props, State> {
@@ -27,14 +29,25 @@ class ChessTeam extends React.Component<Props, State> {
             </div>
         }
 
-        return <div className={"teamCt" + (this.props.inCharge ? "" : " inactive")}>
-            <div className={"teamplayersCt"}>
-                {this.props.players.map(p => <div className={"teamplayer "}>
-                    {p.order === this.props.currentPlayer ? "🔥" : ""}
-                    {p.name}
-                </div>)}
+        let joinBtn = <Fragment></Fragment>
+        if (this.props.onJoin !== undefined) {
+            joinBtn = <Button variant="primary" onClick={() => this.props.onJoin!()}>Join</Button>
+        }
+
+        return <div className={"teamCt" + (this.props.inCharge || this.props.onJoin !== undefined ? "" : " inactive")}>
+            <div className="teamCtTop">
+                <div className={"teamplayersCt"}>
+                    {this.props.players.map(p => <div className={"teamplayer "}>
+                        {p.order === this.props.currentPlayer ? "🔥" : ""}
+                        {p.name}
+                    </div>)}
+                    {joinBtn}
+                </div>
+                {timeCt}
             </div>
-            {timeCt}
+            <div className="hitfiguresCt">
+                {this.props.hitFigures.map(f => <img src={getFigureImgPath(f)} />)}
+            </div>
         </div>
     }
 }
@@ -44,7 +57,8 @@ interface Props {
     time: number | null
     currentPlayer: number // player order number
     inCharge: boolean // team has to play
-    onJoin: () => void
+    hitFigures: Array<Figure>
+    onJoin?: () => void
 }
 interface State {
 

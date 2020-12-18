@@ -13,7 +13,7 @@ export interface TeamDto {
     players: Array<TeamPlayerDto>
     curPlayer: number
     time: number | null
-    hitFigures: Array<FigureType>
+    hitFigures: Array<Figure>
     castlingable: boolean
 }
 

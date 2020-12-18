@@ -4,6 +4,8 @@ import at.apf.reallystrangechess.dto.FigureMoveDto;
 import at.apf.reallystrangechess.dto.GameDto;
 import at.apf.reallystrangechess.dto.TeamDto;
 import at.apf.reallystrangechess.dto.TeamPlayerDto;
+import at.apf.reallystrangechess.model.Color;
+import at.apf.reallystrangechess.model.Figure;
 import at.apf.reallystrangechess.model.FigureMove;
 import at.apf.reallystrangechess.model.Game;
 import org.springframework.stereotype.Component;

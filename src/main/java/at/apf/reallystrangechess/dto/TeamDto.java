@@ -1,5 +1,6 @@
 package at.apf.reallystrangechess.dto;
 
+import at.apf.reallystrangechess.model.Figure;
 import at.apf.reallystrangechess.model.FigureType;
 
 import java.util.List;
@@ -9,7 +10,7 @@ public class TeamDto {
     private List<TeamPlayerDto> players;
     private int curPlayer;
     private Long time; // sec
-    private List<FigureType> hitFigures;
+    private List<Figure> hitFigures;
     private boolean castlingable;
 
     public List<TeamPlayerDto> getPlayers() {
@@ -36,11 +37,11 @@ public class TeamDto {
         this.time = time;
     }
 
-    public List<FigureType> getHitFigures() {
+    public List<Figure> getHitFigures() {
         return hitFigures;
     }
 
-    public void setHitFigures(List<FigureType> hitFigures) {
+    public void setHitFigures(List<Figure> hitFigures) {
         this.hitFigures = hitFigures;
     }
 

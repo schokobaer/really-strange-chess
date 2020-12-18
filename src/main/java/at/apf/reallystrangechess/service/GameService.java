@@ -139,7 +139,7 @@ public class GameService {
 
         game.getHistory().add(new FigureMove(source, target)); // Add move to history
         if (target.getFigure() != null) {
-            team.getHitFigures().add(target.getFigure().getType()); // add hitted figure to hitFigures of team
+            team.getHitFigures().add(target.getFigure()); // add hitted figure to hitFigures of team
         }
         game.setBoard(logic.move(game.getBoard(), from, to)); // change board
         if (team.getTime() != null && game.getLastMove() != null) {

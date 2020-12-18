@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import RestClient from "../rest/RestClient";
 import WebSocketClient from "../rest/WebSocketClient";
-import {Color, GameDto, TeamPlayerDto, Position, MoveRequest, TeamDto} from "../dto/dtos";
+import {Color, GameDto, TeamPlayerDto, Position, MoveRequest, TeamDto, JoinGameRequest} from "../dto/dtos";
 import ChessBoard from "../component/Board";
 import {getUserId, getUserName} from "../util/GameRepo";
 import {BaseChessLogic, colFlip} from "../logic/BaseChessLogic";
@@ -26,7 +26,7 @@ class GamePage extends React.Component<Props, State> {
         this.bcc.onmessage = (msg: MessageEvent) => {
             console.info('GamePage: Received a BCC Msg', msg)
             const game = msg.data as GameDto
-            this.setState({game: game})
+            this.setState({game: game, loading: false})
         }
 
         this.loadGame()
@@ -129,7 +129,16 @@ class GamePage extends React.Component<Props, State> {
     }
 
     join(color: Color) {
+        const req: JoinGameRequest = {
+            color: color,
+            name: getUserName()!
+        }
+        this.rest.join(this.props.gameid, getUserId()!, req).finally(() => {
+            this.loadGame()
+            this.setState({loading: false})
+        })
 
+        this.setState({loading: true})
     }
 
     calcTime(team: TeamDto): number | null{
@@ -180,16 +189,21 @@ class GamePage extends React.Component<Props, State> {
             return <div>No game found</div>
         }
 
-        const teamTop = this.getTeamColor() === "WHITE" ? this.state.game.black : this.state.game.white
-        const teamBottom = this.getTeamColor() === "WHITE" ? this.state.game.white : this.state.game.black
+
+        const teamColor = this.getTeamColor()
+        const teamTop = teamColor === "BLACK" ? this.state.game.white : this.state.game.black
+        const teamBottom =  teamColor === "BLACK" ? this.state.game.black : this.state.game.white
+
+        const joinable = this.state.game.state === "PENDING" && teamColor === undefined
 
         return <Fragment>
             <ChessTeam
                 players={teamTop.players}
                 time={this.calcTime(teamTop)}
                 currentPlayer={teamTop.curPlayer}
+                hitFigures={teamTop.hitFigures}
                 inCharge={this.isInCharge(teamTop)}
-                onJoin={() => this.join("BLACK")} />
+                onJoin={joinable ? () => this.join("BLACK") : undefined} />
 
             <ChessBoard
                 castlingable={this.isCastlingable()}
@@ -203,8 +217,9 @@ class GamePage extends React.Component<Props, State> {
                 players={teamBottom.players}
                 time={this.calcTime(teamBottom)}
                 currentPlayer={teamBottom.curPlayer}
+                hitFigures={teamBottom.hitFigures}
                 inCharge={this.isInCharge(teamBottom)}
-                onJoin={() => this.join("BLACK")} />
+                onJoin={joinable ? () => this.join("WHITE") : undefined} />
         </Fragment>
 
       
