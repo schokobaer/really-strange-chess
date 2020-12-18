@@ -1,5 +1,5 @@
 import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
+import Stomp, {Frame} from 'stompjs';
 
 export default class WebSocketClient {
     private socket: any
@@ -34,11 +34,13 @@ export default class WebSocketClient {
         });
     }
 
-    subscribeToGame(tableid: string) {
-        console.info('WebSocketClient subscribes to ' + tableid)
-        this.subscribe(`/event/game/${tableid}`, (msg: any) => {
-            console.info("Received a websocket message for game " + tableid)
-            this.gameBCC.postMessage(tableid)
+    subscribeToGame(gameid: string) {
+        console.info('WebSocketClient subscribes to ' + gameid)
+        this.subscribe(`/event/game/${gameid}`, (msg: Frame) => {
+            console.info("Received a websocket message for game " + gameid)
+            const game = JSON.parse(msg.body)
+            console.info(game)
+            this.gameBCC.postMessage(game)
         })
     }
 

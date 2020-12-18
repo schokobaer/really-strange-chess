@@ -1,5 +1,6 @@
 package at.apf.reallystrangechess.service;
 
+import at.apf.reallystrangechess.dto.BoardStyle;
 import at.apf.reallystrangechess.dto.CreateGameRequest;
 import at.apf.reallystrangechess.logic.BaseChessLogic;
 import at.apf.reallystrangechess.model.*;
@@ -22,11 +23,16 @@ public class GameService {
     @Autowired
     private NotifyService notifyService;
 
-    public Game createGame(Player player, Long timeWhite, Long timeBlack, Color color) {
+    public Game createGame(Player player, Long timeWhite, Long timeBlack, Color color, BoardStyle style) {
         Game game = new Game();
         game.setCurrentTeam(Color.WHITE);
         game.setState(GameState.PENDING);
-        game.setBoard(logic.generate5x5WithCorners());
+
+        if (style == BoardStyle.CLASSIC) {
+            game.setBoard(logic.generateBoard());
+        } else if (style == BoardStyle.GRID5X5) {
+            game.setBoard(logic.generate5x5WithCorners());
+        }
 
         TeamPlayer p = new TeamPlayer();
         p.setId(player.getId());

@@ -7,6 +7,7 @@ public class CreateGameRequest {
     private Long timeBlack; // sec
     private Color team;
     private String name;
+    private BoardStyle style;
 
     public Long getTimeWhite() {
         return timeWhite;
@@ -38,5 +39,13 @@ public class CreateGameRequest {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public BoardStyle getStyle() {
+        return style;
+    }
+
+    public void setStyle(BoardStyle style) {
+        this.style = style;
     }
 }

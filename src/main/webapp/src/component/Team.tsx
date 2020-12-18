@@ -17,12 +17,13 @@ class ChessTeam extends React.Component<Props, State> {
     }
 
     render () {
-        let timeCt = <div className={"teamtimeCt"}>
+        /*let timeCt = <div className={"teamtimeCt"}>
             <div className={"timewatch" + (this.props.inCharge ? " active" : "")}>{this.timeToWatch(197)}</div>
-        </div>
+        </div>*/
+        let timeCt = <Fragment></Fragment>
         if (this.props.time !== null) {
             timeCt = <div className={"teamtimeCt"}>
-                <div className={"timewatch" + this.props.inCharge ? " active" : ""}>{this.timeToWatch(this.props.time)}</div>
+                <div className={"timewatch" + (this.props.inCharge ? " active" : "")}>{this.timeToWatch(this.props.time)}</div>
             </div>
         }
 

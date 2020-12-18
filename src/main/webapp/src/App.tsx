@@ -15,7 +15,7 @@ class App extends React.Component<Props, State> {
     ws: WebSocketClient = new WebSocketClient()
 
     initWebSockets() {
-        //this.ws.connect()
+        this.ws.connect()
 
     }
 
