@@ -3,7 +3,8 @@ import './App.css';
 import GamePage from './page/GamePage';
 import WebSocketClient from './rest/WebSocketClient'
 import { uuid } from 'uuidv4'
-import {getUserName, setUserId, setUserName} from "./util/GameRepo";
+import {getUserId, getUserName, setUserId, setUserName} from "./util/GameRepo";
+import SetupPage from "./page/SetupPage";
 
 class App extends React.Component<Props, State> {
 
@@ -32,7 +33,22 @@ class App extends React.Component<Props, State> {
         }
     }
 
+    initPlayer(name: string) {
+        if (name.length < 2) {
+            return
+        }
+        const userid = uuid()
+        setUserId(userid)
+        setUserName(name)
+        this.setState({userName: name})
+    }
+
     render () {
+
+        if (getUserName() === null) {
+            return <SetupPage onSubmit={(name: string) => this.initPlayer(name)} />
+        }
+
         if (this.state.gameid) {
             return <GamePage gameid={this.state.gameid} websocket={this.ws} />
         }
