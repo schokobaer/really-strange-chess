@@ -141,6 +141,11 @@ public class GameService {
         if (target.getFigure() != null) {
             team.getHitFigures().add(target.getFigure()); // add hitted figure to hitFigures of team
         }
+        BoardField fromField = logic.getField(game.getBoard(), from);
+        if (logic.isCastlingMove(game.getBoard(), from, to) || fromField != null && fromField.getFigure() != null && (fromField.getFigure().getType() == FigureType.KING)) {
+            team.setCastlingable(false);
+            // TODO: if it is a castlingmove, findout if the tower is still castlingable
+        }
         game.setBoard(logic.move(game.getBoard(), from, to)); // change board
         if (team.getTime() != null && game.getLastMove() != null) {
             team.setTime(team.getTime() - neededSeconds); // set remaining time of team

@@ -361,7 +361,27 @@ public class BaseChessLogic {
     public List<BoardField> move(List<BoardField> board, Position from, Position to) {
         Figure fig = board.stream().filter(f -> f.getPosition().equals(from)).findFirst().orElse(new BoardField(from)).getFigure();
         Position dim = getBoardDimensions(board);
+
+        // Castling
+        BoardField tf = null;
+        BoardField ptf = null;
+        if (this.isCastlingMove(board, from, to)) {
+            int direction = from.getX() > to.getX() ? -1 : 1;
+            BoardField king = getField(board, from);
+            tf = getCastlingTurm(board, king, direction);
+            ptf = getField(board, king.getPosition().move(direction, 0));
+        }
+        final BoardField turmField = tf;
+        final BoardField postTurmField = ptf;
+
         return board.stream().map(f -> {
+            // Handle the turm movement if it is a castlingmove
+            if (turmField != null && turmField.getPosition().equals(f.getPosition())) {
+                return new BoardField(f.getPosition(), f.getColor(), null, f.getMine());
+            } else if (postTurmField != null && postTurmField.getPosition().equals(f.getPosition())) {
+                return new BoardField(f.getPosition(), f.getColor(), turmField.getFigure(), f.getMine());
+            }
+
             if (f.getPosition().equals(from)) {
                 return new BoardField(f.getPosition(), f.getColor(), null, f.getMine());
             } else if (f.getPosition().equals(to)) {
@@ -377,6 +397,47 @@ public class BaseChessLogic {
         }).collect(Collectors.toList());
     }
 
+    public boolean isCastlingMove(List<BoardField> board, Position from, Position to) {
+        Figure fig = this.getField(board, from).getFigure();
+        if (fig == null || fig.getType() != FigureType.KING) {
+            return false;
+        }
+
+        return Math.abs(from.getX() - to.getX()) > 1;
+    }
+
+    /**
+     * Checks between there is no figure between the king and the turm going into the given direction.
+     * @param board board
+     * @param king the field where the king is located
+     * @param direction -1 for left catling, +1 for right castling
+     * @return
+     */
+    private BoardField getCastlingTurm(List<BoardField> board, BoardField king, int direction)  {
+
+        if (king.getFigure() == null || king.getFigure().getType() != FigureType.KING) {
+            return null;
+        }
+
+        Position dim = getBoardDimensions(board);
+        int x = king.getPosition().getX() + direction;
+        int y = king.getPosition().getY();
+        while (x > 0 && x <= dim.getX()) {
+            BoardField f = getField(board, new Position(x, y));
+            if (f.getColor() != BoardFieldColor.EMPTY && f.getFigure() == null) {
+                x += direction;
+            } else if (f.getColor() != BoardFieldColor.EMPTY && f.getFigure() != null &&
+                    f.getFigure().getColor() == king.getFigure().getColor() &&
+                    f.getFigure().getType() == FigureType.TURM) {
+                return f;
+            } else {
+                return null;
+            }
+        }
+
+        return null;
+    }
+
     public List<BoardField> getMoveableFields(List<BoardField> board, BoardField field, boolean castlingable) {
         if (field.getFigure() == null) {
             return new ArrayList<>();
@@ -387,7 +448,31 @@ public class BaseChessLogic {
             List<BoardField> postBoard = move(board, field.getPosition(), to.getPosition());
             return !isCheck(postBoard, fig.getColor());
         }).collect(Collectors.toList());
-        // TODO: Add castling
+
+        // castling
+        if (fig.getType() == FigureType.KING && castlingable) {
+            if (getCastlingTurm(board, field, -1) != null) {
+                BoardField f1 = getField(board, field.getPosition().move(-1, 0));
+                List<BoardField> postBoard1 = move(board, field.getPosition(), f1.getPosition());
+                BoardField f2 = getField(board, field.getPosition().move(-2, 0));
+                List<BoardField> postBoard2 = move(board, field.getPosition(), f2.getPosition());
+
+                if (!isCheck(postBoard1, fig.getColor()) && !isCheck(postBoard2, fig.getColor())) {
+                    moveable.add(f2);
+                }
+            }
+            if (getCastlingTurm(board, field, 1) != null) {
+                BoardField f1 = getField(board, field.getPosition().move(1, 0));
+                List<BoardField> postBoard1 = move(board, field.getPosition(), f1.getPosition());
+                BoardField f2 = getField(board, field.getPosition().move(2, 0));
+                List<BoardField> postBoard2 = move(board, field.getPosition(), f2.getPosition());
+
+                if (!isCheck(postBoard1, fig.getColor()) && !isCheck(postBoard2, fig.getColor())) {
+                    moveable.add(f2);
+                }
+            }
+        }
+
         return moveable;
     }
 

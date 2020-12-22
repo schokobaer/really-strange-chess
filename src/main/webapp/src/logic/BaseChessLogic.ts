@@ -362,8 +362,24 @@ export class BaseChessLogic {
 
     public move(board: Array<BoardField>, from: Position, to: Position): Array<BoardField> {
         const dim = this.boardDimensions(board)
-        const fig = this.getField(board, from).figure
+        const fig = this.getField(board, from).figure!
+        // find turm position and postTurmPosition if it is a castling move
+        let turmField: BoardField | null = null
+        let postTurmField: BoardField | null = null
+        if (this.isCastlingMove(board, from, to)) {
+            const direction = (Math.sign(from.x - to.x) * -1) as -1 | 1
+            const king = this.getField(board, from)
+            turmField = this.castlingTurm(board, king, direction)
+            postTurmField = this.getField(board, {x: king.position.x + direction, y: king.position.y})
+        }
         return board.map(f => {
+            // Handle the turm movement if it is a castlingmove
+            if (turmField !== null && posEq(turmField.position, f.position)) {
+                return {position: f.position, color: f.color, figure: null, mine: f.mine}
+            } else if (postTurmField !== null && posEq(postTurmField.position, f.position)) {
+                return {position: f.position, color: f.color, figure: turmField!.figure, mine: f.mine}
+            }
+
             if (posEq(f.position, from)) {
                 return {position: from, color: f.color, figure: null, mine: f.mine}
             } else if (posEq(f.position, to)) {
@@ -391,17 +407,93 @@ export class BaseChessLogic {
         return Math.abs(from.x - to.x) > 1
     }
 
+    private castlingTurm(board: Array<BoardField>, king: BoardField, direction: 1 | -1): BoardField | null {
+        if (king.figure === null || king.figure.type !== "KING") {
+            return null
+        }
+
+        const dim = this.boardDimensions(board)
+        let x = king.position.x + direction
+        const y = king.position.y
+        while (x > 0 && x <= dim.x) {
+            const f = this.getField(board, {x: x, y: y})
+            if (f.color != "EMPTY" && f.figure == null) {
+                x += direction
+            } else if (f.color !== "EMPTY" && f.figure !== null && f.figure.color === king.figure.color && f.figure.type === "TURM") {
+                return f
+            } else {
+                return null
+            }
+        }
+
+        return null
+    }
+
+    /**
+     * DEPRECATED. Use castlingTurm(board, king, direction) !== null
+     * @param board
+     * @param king
+     * @param direction
+     */
+    /*public canCastle(board: Array<BoardField>, king: BoardField, direction: 1 | -1): boolean {
+
+        if (king.figure === null || king.figure.type !== "KING") {
+            return false
+        }
+
+        const dim = this.boardDimensions(board)
+        let x = king.position.x + direction
+        const y = king.position.y
+        while (x > 0 && x <= dim.x) {
+            const f = this.getField(board, {x: x, y: y})
+            if (f.color != "EMPTY" && f.figure == null) {
+                x += direction
+            } else if (f.color !== "EMPTY" && f.figure !== null && f.figure.color === king.figure.color && f.figure.type === "TURM") {
+                return true
+            } else {
+                return false
+            }
+        }
+
+        return false
+    }*/
+
     public moveableFields(board: Array<BoardField>, field: BoardField, castlingable: boolean): Array<BoardField> {
         if (field.figure === null) {
             return []
         }
         const fig = field.figure
-        // TODO: Add castling
 
-        return this.accessFields(board, field).filter(to => {
+        const result = this.accessFields(board, field).filter(to => {
             const postBoard = this.move(board, field.position, to.position)
             return !this.isCheck(postBoard, fig.color)
         })
+
+        // castling
+        if (fig.type === "KING" && castlingable) {
+            if (this.castlingTurm(board, field, -1) !== null) {
+                const f1 = this.getField(board, {x: field.position.x - 1, y: field.position.y})
+                const postBoard1 = this.move(board, field.position, f1.position)
+                const f2 = this.getField(board, {x: field.position.x - 2, y: field.position.y})
+                const postBoard2 = this.move(board, field.position, f2.position)
+
+                if (!this.isCheck(postBoard1, fig.color) && !this.isCheck(postBoard2, fig.color)) {
+                    result.push(f2)
+                }
+            }
+            if (this.castlingTurm(board, field, 1) != null) {
+                const f1 = this.getField(board, {x: field.position.x + 1, y: field.position.y})
+                const postBoard1 = this.move(board, field.position, f1.position)
+                const f2 = this.getField(board, {x: field.position.x + 2, y: field.position.y})
+                const postBoard2 = this.move(board, field.position, f2.position)
+
+                if (!this.isCheck(postBoard1, fig.color) && !this.isCheck(postBoard2, fig.color)) {
+                    result.push(f2)
+                }
+            }
+        }
+
+        return result
     }
 
 }
