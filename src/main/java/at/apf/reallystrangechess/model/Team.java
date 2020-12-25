@@ -6,7 +6,6 @@ import java.util.List;
 public class Team {
     private List<TeamPlayer> players = new ArrayList<>();
     private int currentPlayer;
-    private boolean castlingable = true;
     private Long time;
     private List<Figure> hitFigures = new ArrayList<>();
 
@@ -26,14 +25,6 @@ public class Team {
 
     public void setCurrentPlayer(int currentPlayer) {
         this.currentPlayer = currentPlayer;
-    }
-
-    public boolean isCastlingable() {
-        return castlingable;
-    }
-
-    public void setCastlingable(boolean castlingable) {
-        this.castlingable = castlingable;
     }
 
     public Long getTime() {

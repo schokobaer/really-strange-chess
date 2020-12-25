@@ -12,7 +12,6 @@ public class Game {
     private Color currentTeam;
     private List<FigureMove> history = new ArrayList<>();
     private List<BoardField> board;
-    private Date lastMove;
     private GameState state = GameState.PENDING;
     // TODO: Add GameResult {winner?: Color, reason?: TIME | CHECKMATE }
 
@@ -72,11 +71,8 @@ public class Game {
         this.board = board;
     }
 
-    public Date getLastMove() {
-        return lastMove;
+    public FigureMove getLastMove() {
+        return history.isEmpty() ? null : history.get(history.size() - 1);
     }
 
-    public void setLastMove(Date lastMove) {
-        this.lastMove = lastMove;
-    }
 }

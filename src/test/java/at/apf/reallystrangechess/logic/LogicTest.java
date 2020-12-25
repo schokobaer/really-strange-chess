@@ -99,14 +99,14 @@ public class LogicTest {
 
         Assert.assertFalse(logic.isCheck(board, Color.WHITE));
 
-        logic.getMoveableFields(board, board.stream().filter(f -> f.getPosition().equals(new Position(2, 1))).findFirst().get(), true)
+        logic.getMoveableFields(board, board.stream().filter(f -> f.getPosition().equals(new Position(2, 1))).findFirst().get(), new ArrayList<>())
                 .stream().forEach(f -> System.out.println(f));
         System.out.println();
 
         board = logic.move(board, new Position(2, 1), new Position(1, 1));
         Assert.assertTrue(logic.isCheck(board, Color.WHITE));
 
-        logic.getMoveableFields(board, board.stream().filter(f -> f.getPosition().equals(new Position(1, 1))).findFirst().get(), true)
+        logic.getMoveableFields(board, board.stream().filter(f -> f.getPosition().equals(new Position(1, 1))).findFirst().get(), new ArrayList<>())
                 .stream().forEach(f -> System.out.println(f));
         System.out.println();
 
@@ -133,7 +133,7 @@ public class LogicTest {
         printBoardFigs(board);
         System.out.println("-----------------");
 
-        logic.getMoveableFields(board, board.stream().filter(f -> f.getPosition().equals(new Position(5, 4))).findFirst().get(), false)
+        logic.getMoveableFields(board, board.stream().filter(f -> f.getPosition().equals(new Position(5, 4))).findFirst().get(), new ArrayList<>())
                 .stream().forEach(f -> System.out.println(f.getPosition()));
     }
 }

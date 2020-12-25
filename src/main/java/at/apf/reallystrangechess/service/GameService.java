@@ -1,7 +1,6 @@
 package at.apf.reallystrangechess.service;
 
 import at.apf.reallystrangechess.dto.BoardStyle;
-import at.apf.reallystrangechess.dto.CreateGameRequest;
 import at.apf.reallystrangechess.logic.BaseChessLogic;
 import at.apf.reallystrangechess.model.*;
 import at.apf.reallystrangechess.repo.GameRepo;
@@ -117,7 +116,7 @@ public class GameService {
 
         Date now = new Date();
         Long neededSeconds = 0L;
-        if (game.getLastMove() != null) {
+        if (!game.getHistory().isEmpty()) {
             neededSeconds = (now.getTime() - game.getLastMove().getTime()) / 1000;
         }
         if (team.getTime() != null && team.getTime() <= neededSeconds) {
@@ -129,7 +128,7 @@ public class GameService {
 
         BoardField source = logic.getField(game.getBoard(), from);
         BoardField target = logic.getField(game.getBoard(), to);
-        boolean moveIsValid = logic.getMoveableFields(game.getBoard(), source, team.isCastlingable()).stream()
+        boolean moveIsValid = logic.getMoveableFields(game.getBoard(), source, game.getHistory()).stream()
                 .filter(f -> f.getPosition().equals(to))
                 .findAny().isPresent();
         if (!moveIsValid || source.getColor() == BoardFieldColor.EMPTY || source.getFigure().getColor() != game.getCurrentTeam()) {
@@ -141,16 +140,10 @@ public class GameService {
         if (target.getFigure() != null) {
             team.getHitFigures().add(target.getFigure()); // add hitted figure to hitFigures of team
         }
-        BoardField fromField = logic.getField(game.getBoard(), from);
-        if (logic.isCastlingMove(game.getBoard(), from, to) || fromField != null && fromField.getFigure() != null && (fromField.getFigure().getType() == FigureType.KING)) {
-            team.setCastlingable(false);
-            // TODO: if it is a castlingmove, findout if the tower is still castlingable
-        }
         game.setBoard(logic.move(game.getBoard(), from, to)); // change board
         if (team.getTime() != null && game.getLastMove() != null) {
             team.setTime(team.getTime() - neededSeconds); // set remaining time of team
         }
-        game.setLastMove(now); // update last move
 
         team.setCurrentPlayer( (player.getOrder() + 1) % team.getPlayers().size() ); // next player of team
         game.setCurrentTeam(game.getCurrentTeam().flip()); // flip current Team
@@ -185,7 +178,7 @@ public class GameService {
             }
         }).collect(Collectors.toList()));
         game.setCurrentTeam(game.getCurrentTeam().flip()); // flip current Team
-        game.setLastMove(new Date()); // update last move
+        game.getLastMove().setTime(new Date().getTime()); // update last move
         Team team = game.getCurrentTeam() == Color.WHITE ? game.getWhite() : game.getBlack();
         if (move.getTo().getFigure() != null) {
             team.getHitFigures().remove(team.getHitFigures().size() - 1); // remove hitted figure

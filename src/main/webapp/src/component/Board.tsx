@@ -12,6 +12,10 @@ class ChessBoard extends React.Component<Props, State> {
 
     private logic = new BaseChessLogic()
 
+    lastMove(): FigureMoveDto | null {
+        return this.props.history.length === 0 ? null : this.props.history[this.props.history.length - 1]
+    }
+
     fieldClick(field: BoardField) {
         if (!this.props.canMove) {
             return;
@@ -27,7 +31,7 @@ class ChessBoard extends React.Component<Props, State> {
             this.setState({selected: undefined})
             return;
         }
-        const hints = this.logic.moveableFields(this.props.fields, this.state.selected, this.props.castlingable)
+        const hints = this.logic.moveableFields(this.props.fields, this.state.selected, this.props.history)
         if (this.containsField(hints, field)) {
             this.props.onMove(this.state.selected.position, field.position)
             this.setState({selected: undefined})
@@ -41,9 +45,10 @@ class ChessBoard extends React.Component<Props, State> {
     }
 
     involvedInLastMove(field: BoardField): boolean {
-        if (this.props.lastMove) {
-            return posEq(this.props.lastMove.from.position, field.position)
-                || posEq(this.props.lastMove.to.position, field.position)
+        const lastMove = this.lastMove()
+        if (lastMove) {
+            return posEq(lastMove.from.position, field.position)
+                || posEq(lastMove.to.position, field.position)
         }
         return false
     }
@@ -55,7 +60,7 @@ class ChessBoard extends React.Component<Props, State> {
     render () {
 
         const kingsInDanger = this.logic.getKingsInCheck(this.props.fields, "WHITE").concat(this.logic.getKingsInCheck(this.props.fields, "BLACK"))
-        const hints = this.state.selected ? this.logic.moveableFields(this.props.fields, this.state.selected, this.props.castlingable) : []
+        const hints = this.state.selected ? this.logic.moveableFields(this.props.fields, this.state.selected, this.props.history) : []
 
         const rows = []
         const dim = this.logic.boardDimensions(this.props.fields)
@@ -71,7 +76,14 @@ class ChessBoard extends React.Component<Props, State> {
                 curRowFields.push(f)
             }
             //const curRowFields = this.props.fields.filter(f => f.position.y === i).sort((a, b) => a.position.x - b.position.x)
-            rows.push(<div className={'chessrow'}>{curRowFields.map(f => <ChessField hint={this.containsField(hints, f)} danger={this.containsField(kingsInDanger, f)} lastMove={this.involvedInLastMove(f)} selected={this.state.selected === f} field={f} onClick={(f: BoardField) => this.fieldClick(f)} />)}</div>)
+            rows.push(<div className={'chessrow'}>{curRowFields.map(f => <ChessField
+                hint={this.containsField(hints, f)}
+                danger={this.containsField(kingsInDanger, f)}
+                lastMove={this.involvedInLastMove(f)}
+                selected={this.state.selected === f}
+                field={f}
+                onClick={(f: BoardField) => this.fieldClick(f)}
+            />)}</div>)
         }
 
         return <div className='boardbox'>
@@ -86,8 +98,7 @@ interface Props {
     fields: Array<BoardField>
     color?: Color
     canMove: boolean
-    castlingable: boolean
-    lastMove: FigureMoveDto | null
+    history: Array<FigureMoveDto>
     onMove: (from: Position, to: Position) => void
 }
 interface State {

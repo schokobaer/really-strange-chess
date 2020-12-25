@@ -1,5 +1,7 @@
 package at.apf.reallystrangechess.model;
 
+import java.util.Objects;
+
 public class Figure {
     private Color color;
     private FigureType type;
@@ -23,6 +25,20 @@ public class Figure {
 
     public void setType(FigureType type) {
         this.type = type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Figure figure = (Figure) o;
+        return color == figure.color &&
+                type == figure.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return color.ordinal() * 10 + type.ordinal();
     }
 
     @Override

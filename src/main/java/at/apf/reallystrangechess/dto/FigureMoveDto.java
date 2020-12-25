@@ -2,8 +2,6 @@ package at.apf.reallystrangechess.dto;
 
 import at.apf.reallystrangechess.model.BoardField;
 
-import java.util.Date;
-
 public class FigureMoveDto {
 
     private BoardField from;

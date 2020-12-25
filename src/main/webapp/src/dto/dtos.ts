@@ -6,7 +6,7 @@ export interface GameDto {
     currentTeam: Color
     state: GameState
     board: Array<BoardField>
-    lastMove: FigureMoveDto | null
+    history: Array<FigureMoveDto>
 }
 
 export interface TeamDto {
@@ -14,7 +14,6 @@ export interface TeamDto {
     curPlayer: number
     time: number | null
     hitFigures: Array<Figure>
-    castlingable: boolean
 }
 
 export type Color = 'WHITE' | 'BLACK'

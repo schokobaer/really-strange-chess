@@ -1,7 +1,14 @@
-import {BoardField, Color, Figure, Position} from "../dto/dtos";
+import {BoardField, Color, Figure, FigureMoveDto, Position} from "../dto/dtos";
 
 export function posEq(a: Position, b: Position): boolean {
     return a.x === b.x && a.y === b.y
+}
+
+export function figEq(a: Figure | null, b: Figure | null): boolean {
+    if (a === null || b == null) {
+        return false
+    }
+    return a.type === b.type && a.color === b.color
 }
 
 export function posMove(pos: Position, x: number, y: number): Position {
@@ -429,36 +436,16 @@ export class BaseChessLogic {
         return null
     }
 
-    /**
-     * DEPRECATED. Use castlingTurm(board, king, direction) !== null
-     * @param board
-     * @param king
-     * @param direction
-     */
-    /*public canCastle(board: Array<BoardField>, king: BoardField, direction: 1 | -1): boolean {
+    private figureMoved(field: BoardField, history: Array<FigureMoveDto>): boolean {
 
-        if (king.figure === null || king.figure.type !== "KING") {
+        if (field.figure === null) {
             return false
         }
 
-        const dim = this.boardDimensions(board)
-        let x = king.position.x + direction
-        const y = king.position.y
-        while (x > 0 && x <= dim.x) {
-            const f = this.getField(board, {x: x, y: y})
-            if (f.color != "EMPTY" && f.figure == null) {
-                x += direction
-            } else if (f.color !== "EMPTY" && f.figure !== null && f.figure.color === king.figure.color && f.figure.type === "TURM") {
-                return true
-            } else {
-                return false
-            }
-        }
+        return history.filter(f => posEq(f.to.position, field.position)).length > 0
+    }
 
-        return false
-    }*/
-
-    public moveableFields(board: Array<BoardField>, field: BoardField, castlingable: boolean): Array<BoardField> {
+    public moveableFields(board: Array<BoardField>, field: BoardField, history: Array<FigureMoveDto>): Array<BoardField> {
         if (field.figure === null) {
             return []
         }
@@ -470,8 +457,9 @@ export class BaseChessLogic {
         })
 
         // castling
-        if (fig.type === "KING" && castlingable) {
-            if (this.castlingTurm(board, field, -1) !== null) {
+        if (fig.type === "KING" && !this.figureMoved(field, history)) {
+            const castlingTurmLeft = this.castlingTurm(board, field, -1)
+            if (castlingTurmLeft !== null && !this.figureMoved(castlingTurmLeft, history)) {
                 const f1 = this.getField(board, {x: field.position.x - 1, y: field.position.y})
                 const postBoard1 = this.move(board, field.position, f1.position)
                 const f2 = this.getField(board, {x: field.position.x - 2, y: field.position.y})
@@ -481,7 +469,8 @@ export class BaseChessLogic {
                     result.push(f2)
                 }
             }
-            if (this.castlingTurm(board, field, 1) != null) {
+            const castlingTurmRight = this.castlingTurm(board, field, 1)
+            if (castlingTurmRight != null && !this.figureMoved(castlingTurmRight, history)) {
                 const f1 = this.getField(board, {x: field.position.x + 1, y: field.position.y})
                 const postBoard1 = this.move(board, field.position, f1.position)
                 const f2 = this.getField(board, {x: field.position.x + 2, y: field.position.y})

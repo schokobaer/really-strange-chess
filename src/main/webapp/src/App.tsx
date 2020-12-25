@@ -5,6 +5,7 @@ import WebSocketClient from './rest/WebSocketClient'
 import { uuid } from 'uuidv4'
 import {getUserId, getUserName, setUserId, setUserName} from "./util/GameRepo";
 import SetupPage from "./page/SetupPage";
+import {sha256} from "./util/utils";
 
 class App extends React.Component<Props, State> {
 
@@ -33,20 +34,21 @@ class App extends React.Component<Props, State> {
         }
     }
 
-    initPlayer(name: string) {
-        if (name.length < 2) {
+    initPlayer(name: string, phrase: string) {
+        if (name.length < 2 || phrase.length < 1) {
             return
         }
-        const userid = uuid()
-        setUserId(userid)
-        setUserName(name)
-        this.setState({userName: name})
+        sha256(name + '_' + phrase).then((userid: string) => {
+            setUserId(userid)
+            setUserName(name)
+            this.setState({userName: name})
+        })
     }
 
     render () {
 
         if (getUserName() === null) {
-            return <SetupPage onSubmit={(name: string) => this.initPlayer(name)} />
+            return <SetupPage onSubmit={(name: string, phrase: string) => this.initPlayer(name, phrase)} />
         }
 
         if (this.state.gameid) {

@@ -92,11 +92,7 @@ class GamePage extends React.Component<Props, State> {
         const toField = this.logic.getField(game.board, to)
         game.currentTeam = colFlip(game.currentTeam)
         game.board = this.logic.move(game.board, from, to)
-        game.lastMove = {
-            time: new Date().getTime(),
-            from: fromField,
-            to: toField
-        }
+        game.history.push({from: fromField, to: toField, time: new Date().getTime()})
         this.setState({game: game})
     }
 
@@ -109,11 +105,6 @@ class GamePage extends React.Component<Props, State> {
                 return "BLACK"
             }
         }
-    }
-
-    isCastlingable(): boolean {
-        return this.getTeamColor() === "WHITE" ? this.state.game!.white.castlingable :
-            this.getTeamColor() === "BLACK" ? this.state.game!.black.castlingable : false
     }
 
     canMove(): boolean {
@@ -155,12 +146,12 @@ class GamePage extends React.Component<Props, State> {
             return team.time
         }
 
-        if (this.state.game!.lastMove === null) {
+        if (this.state.game!.history.length === 0) {
             return team.time
         }
-
+        const lastMove = this.state.game!.history[this.state.game!.history.length - 1]
         const now = new Date()
-        const ereased = Math.floor((now.getTime() - this.state.game!.lastMove.time) / 1000)
+        const ereased = Math.floor((now.getTime() - lastMove.time) / 1000)
         return Math.max(team.time - ereased, 0)
     }
 
@@ -206,8 +197,7 @@ class GamePage extends React.Component<Props, State> {
                 onJoin={joinable ? () => this.join("BLACK") : undefined} />
 
             <ChessBoard
-                castlingable={this.isCastlingable()}
-                lastMove={this.state.game.lastMove}
+                history={this.state.game.history}
                 onMove={(from: Position, to: Position) => this.makeMove(from, to)}
                 fields={this.state.game.board}
                 color={this.getTeamColor()}

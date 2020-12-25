@@ -14,7 +14,7 @@ public class GameDto {
     private Color currentTeam;
     private GameState state;
     private List<BoardField> board;
-    private FigureMoveDto lastMove;
+    private List<FigureMoveDto> history;
 
     public String getId() {
         return id;
@@ -56,12 +56,12 @@ public class GameDto {
         this.state = state;
     }
 
-    public FigureMoveDto getLastMove() {
-        return lastMove;
+    public List<FigureMoveDto> getHistory() {
+        return history;
     }
 
-    public void setLastMove(FigureMoveDto lastMove) {
-        this.lastMove = lastMove;
+    public void setHistory(List<FigureMoveDto> history) {
+        this.history = history;
     }
 
     public List<BoardField> getBoard() {
