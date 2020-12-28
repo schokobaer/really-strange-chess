@@ -56,6 +56,7 @@ export interface CreateGameRequest {
     timeBlack: number | null // sec
     team: Color
     name: string
+    style: BoardStyle
 }
 
 export interface JoinGameRequest {
@@ -67,3 +68,5 @@ export interface MoveRequest {
     from: Position
     to: Position
 }
+
+export type BoardStyle = 'CLASSIC' | 'GRID5X5'
