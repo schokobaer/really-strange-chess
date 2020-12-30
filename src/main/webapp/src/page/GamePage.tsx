@@ -108,7 +108,8 @@ class GamePage extends React.Component<Props, State> {
     }
 
     canMove(): boolean {
-        if (this.state.game!.state === "FINISHED" || this.state.game!.currentTeam !== this.getTeamColor()) {
+        if (this.state.game!.state === "FINISHED" || this.state.game!.currentTeam !== this.getTeamColor()
+            || this.state.game!.white.players.length === 0 || this.state.game!.black.players.length === 0) {
             return false
         }
         const team = this.getTeamColor() === "WHITE" ? this.state.game!.white :

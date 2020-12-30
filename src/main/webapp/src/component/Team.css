@@ -1,8 +1,11 @@
 .teamCt {
-    margin: 20px 0px 20px 0px;
+    /*margin: 20px 0px 20px 0px;*/
     /*box-shadow: 0px 0px 10px 10px rgba(68,68,68,0.7);*/
     /*background-image: url('../texture/woodbars.jpeg');*/
-
+    background-color: #e9ecef;
+    border-radius: .3rem;
+    min-height: 3rem;
+    margin: 10px;
 }
 
 .teamCtTop {
