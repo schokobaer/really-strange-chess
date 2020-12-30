@@ -9,6 +9,7 @@ public class CreateGameRequest {
     private String name;
     private BoardStyle style;
     private MineConfig mineConfig;
+    private String board;
 
     public Long getTimeWhite() {
         return timeWhite;
@@ -56,6 +57,14 @@ public class CreateGameRequest {
 
     public void setMineConfig(MineConfig mineConfig) {
         this.mineConfig = mineConfig;
+    }
+
+    public String getBoard() {
+        return board;
+    }
+
+    public void setBoard(String board) {
+        this.board = board;
     }
 
     public class MineConfig {

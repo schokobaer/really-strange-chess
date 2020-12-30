@@ -58,6 +58,7 @@ export interface CreateGameRequest {
     name: string
     style: BoardStyle
     mineConfig: MineConfig | null
+    board: string | null
 }
 
 export interface MineConfig {
@@ -75,4 +76,4 @@ export interface MoveRequest {
     to: Position
 }
 
-export type BoardStyle = 'CLASSIC' | 'GRID5X5'
+export type BoardStyle = 'CLASSIC' | 'GRID5X5' | 'CUSTOM'

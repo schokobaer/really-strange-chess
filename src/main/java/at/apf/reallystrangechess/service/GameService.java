@@ -4,6 +4,7 @@ import at.apf.reallystrangechess.dto.BoardStyle;
 import at.apf.reallystrangechess.dto.CreateGameRequest;
 import at.apf.reallystrangechess.logic.BaseChessLogic;
 import at.apf.reallystrangechess.logic.MineGenerator;
+import at.apf.reallystrangechess.mapper.BoardConverter;
 import at.apf.reallystrangechess.model.*;
 import at.apf.reallystrangechess.repo.GameRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,15 @@ public class GameService {
     BaseChessLogic logic = new BaseChessLogic();
 
     @Autowired
+    private BoardConverter boardConverter;
+
+    @Autowired
     private GameRepo gameRepo;
 
     @Autowired
     private NotifyService notifyService;
 
-    public Game createGame(Player player, Long timeWhite, Long timeBlack, Color color, BoardStyle style, CreateGameRequest.MineConfig mineConfig) {
+    public Game createGame(Player player, Long timeWhite, Long timeBlack, Color color, BoardStyle style, CreateGameRequest.MineConfig mineConfig, String customBoard) {
         Game game = new Game();
         game.setCurrentTeam(Color.WHITE);
         game.setState(GameState.PENDING);
@@ -33,6 +37,8 @@ public class GameService {
             game.setBoard(logic.generateBoard());
         } else if (style == BoardStyle.GRID5X5) {
             game.setBoard(logic.generate5x5WithCorners());
+        } else if (style == BoardStyle.CUSTOM) {
+            game.setBoard(boardConverter.fromString(customBoard));
         }
 
         TeamPlayer p = new TeamPlayer();

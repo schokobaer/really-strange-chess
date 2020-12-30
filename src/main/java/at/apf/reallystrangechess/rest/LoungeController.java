@@ -28,7 +28,7 @@ public class LoungeController {
         player.setId(playerid);
         player.setName(req.getName());
 
-        Game game = gameService.createGame(player, req.getTimeWhite(), req.getTimeBlack(), req.getTeam(), req.getStyle(), req.getMineConfig());
+        Game game = gameService.createGame(player, req.getTimeWhite(), req.getTimeBlack(), req.getTeam(), req.getStyle(), req.getMineConfig(), req.getBoard());
 
         return game.getId();
     }

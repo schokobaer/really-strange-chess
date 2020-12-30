@@ -12,7 +12,8 @@ import {getUserName} from "../util/GameRepo";
 
 const boardstyles = [
     {value: 'CLASSIC', label: 'Classic'},
-    {value: 'GRID5X5', label: '5x5 Grid'}
+    {value: 'GRID5X5', label: '5x5 Grid'},
+    {value: 'CUSTOM', label: 'Custom'}
 ]
 
 class CreatePage extends React.Component<Props, State> {
@@ -25,6 +26,7 @@ class CreatePage extends React.Component<Props, State> {
         mine: false,
         mineOffset: 10,
         mineInterval: 4,
+        board: '',
         style: 'CLASSIC'
     }
 
@@ -46,7 +48,8 @@ class CreatePage extends React.Component<Props, State> {
             team: this.state.color,
             timeWhite: null,
             timeBlack: null,
-            mineConfig: null
+            mineConfig: null,
+            board: null
         }
 
         if (this.state.mine) {
@@ -54,6 +57,10 @@ class CreatePage extends React.Component<Props, State> {
                 interval: this.state.mineInterval,
                 offset: this.state.mineOffset
             }
+        }
+
+        if (this.state.style === "CUSTOM") {
+            req.board = this.state.board
         }
 
         if (this.state.time) {
@@ -68,6 +75,14 @@ class CreatePage extends React.Component<Props, State> {
     }
 
     render () {
+
+        let board : any = ''
+        if (this.state.style === "CUSTOM") {
+            board = <Form.Group>
+                <Form.Label>Board:</Form.Label>
+                <textarea onChange={e => this.setState({board: e.target.value})}>{this.state.board}</textarea>
+            </Form.Group>
+        }
 
         return <Fragment>
             <Jumbotron>
@@ -101,6 +116,7 @@ class CreatePage extends React.Component<Props, State> {
                         <Form.Label>Style: </Form.Label>
                         <Select defaultValue={boardstyles[0]} options={boardstyles} onChange={(v: any) => this.styleChange(v.value as BoardStyle)} />
                     </Form.Group>
+                    {board}
                     <Button onClick={() => this.submit()} >Start</Button>
                 </Form>
             </Jumbotron>
@@ -119,6 +135,7 @@ interface State {
     mine: boolean
     mineOffset: number
     mineInterval: number
+    board: string
     style: BoardStyle
 }
 

@@ -18,4 +18,5 @@ public enum FigureType {
     public String getChar() {
         return c;
     }
+
 }
