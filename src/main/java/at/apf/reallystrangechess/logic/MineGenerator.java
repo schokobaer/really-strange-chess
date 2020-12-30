@@ -30,7 +30,7 @@ public class MineGenerator {
         }
 
         BoardField mineField = null;
-        List<BoardField> mineableFields = board.stream().filter(f -> f.getFigure() == null && f.getColor() == color)
+        List<BoardField> mineableFields = board.stream().filter(f -> f.getFigure() == null && f.getColor() == color && f.getMine() == null)
                 .collect(Collectors.toList());
 
         if (!mineableFields.isEmpty()) {

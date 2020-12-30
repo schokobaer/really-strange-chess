@@ -27,6 +27,7 @@ class ChessField extends React.Component<Props, State> {
                    <div className={'fieldselect' + selectField + mine}>
                        <img src={getFigureImgPath(this.props.field.figure)} />
                    </div>
+            {this.props.field.mine !== null ? <div style={{marginTop: '-1.3rem'}}>{this.props.field.mine}</div> : ''}
                </div>
     }
 }
