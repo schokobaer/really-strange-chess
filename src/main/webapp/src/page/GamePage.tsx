@@ -3,9 +3,12 @@ import RestClient from "../rest/RestClient";
 import WebSocketClient from "../rest/WebSocketClient";
 import {Color, GameDto, TeamPlayerDto, Position, MoveRequest, TeamDto, JoinGameRequest} from "../dto/dtos";
 import ChessBoard from "../component/Board";
-import {getUserId, getUserName} from "../util/GameRepo";
+import {getUserId, getUserName, soundOn} from "../util/GameRepo";
 import {BaseChessLogic, colFlip} from "../logic/BaseChessLogic";
 import ChessTeam from "../component/Team";
+
+const moveSound = new Audio('sound/move.mp3')
+const hitSound = new Audio('sound/hit.wav')
 
 
 class GamePage extends React.Component<Props, State> {
@@ -26,6 +29,15 @@ class GamePage extends React.Component<Props, State> {
         this.bcc.onmessage = (msg: MessageEvent) => {
             console.info('GamePage: Received a BCC Msg', msg)
             const game = msg.data as GameDto
+            if (soundOn() && game.currentTeam !== this.state.game?.currentTeam) {
+                if (game.history.length > 0 && game.history[game.history.length - 1].to.figure !== null) {
+                    hitSound.play().then(() => console.info('Played hit sound successfully'))
+                        .catch(err => console.error('Cound not play hit sound: ', err))
+                } else {
+                    moveSound.play().then(() => console.info('Played move sound successfully'))
+                        .catch(err => console.error('Cound not play move sound: ', err))
+                }
+            }
             this.setState({game: game, loading: false})
         }
 

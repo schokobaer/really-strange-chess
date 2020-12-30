@@ -3,7 +3,7 @@ import './App.css';
 import GamePage from './page/GamePage';
 import WebSocketClient from './rest/WebSocketClient'
 import { uuid } from 'uuidv4'
-import {getUserId, getUserName, setUserId, setUserName} from "./util/GameRepo";
+import {getUserId, getUserName, setSound, setUserId, setUserName} from "./util/GameRepo";
 import SetupPage from "./page/SetupPage";
 import {sha256} from "./util/utils";
 import CreatePage from "./page/CreatePage";
@@ -48,6 +48,7 @@ class App extends React.Component<Props, State> {
         sha256(name + '_' + phrase).then((userid: string) => {
             setUserId(userid)
             setUserName(name)
+            setSound(true)
             this.setState({userName: name})
         })
     }
