@@ -154,6 +154,12 @@ public class GameService {
         // Mine
         if (game.getMineGenerator() != null) {
             List<BoardField> board = game.getBoard();
+
+            // King defusion
+            if (source.getFigure().getType() == FigureType.KING) {
+                board.stream().filter(f -> f.getPosition().equals(target.getPosition())).findFirst().get().setMine(null);
+            }
+
             // Reduce already given miens
             board = board.stream().map(f -> {
                 BoardField fn = new BoardField(f.getPosition(), f.getColor(), f.getFigure(), f.getMine());
@@ -163,6 +169,10 @@ public class GameService {
                         fn.setColor(BoardFieldColor.EMPTY);
                         fn.setFigure(null);
                         fn.setMine(null);
+                        if (f.getFigure() != null) {
+                            Team t = f.getFigure().getColor() == Color.WHITE ? game.getBlack() : game.getWhite();
+                            t.getHitFigures().add(f.getFigure());
+                        }
                     }
                 }
                 return fn;
