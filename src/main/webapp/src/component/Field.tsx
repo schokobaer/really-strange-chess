@@ -23,8 +23,8 @@ class ChessField extends React.Component<Props, State> {
 
         const mine = this.props.field.mine !== null ? ' fieldmine' : '';
 
-        return <div className={'field ' + fieldColor + mine} onClick={() => this.props.onClick(this.props.field)}>
-                   <div className={'fieldselect' + selectField}>
+        return <div className={'field ' + fieldColor} onClick={() => this.props.onClick(this.props.field)}>
+                   <div className={'fieldselect' + selectField + mine}>
                        <img src={getFigureImgPath(this.props.field.figure)} />
                    </div>
                </div>
