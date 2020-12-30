@@ -41,10 +41,10 @@ public class GameController {
         gameService.move(id, playerid, req.getFrom(), req.getTo());
     }
 
-    @PostMapping("/api/game/{id}/udno")
+    @PostMapping("/api/game/{id}/undo")
     public void undo(@PathVariable String id, @RequestHeader String playerid) {
         // undoes the last move
-        gameService.undo(id);
+        gameService.undo(id, playerid);
     }
 
     @PostMapping("/api/game/{id}/timeout")

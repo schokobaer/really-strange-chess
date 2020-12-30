@@ -196,12 +196,18 @@ public class GameService {
         notifyService.gameUpdate(game);
     }
 
-    public void undo(String gameid) {
+    public void undo(String gameid, String playerid) {
         Game game = gameRepo.readLocked(gameid);
 
         if (game.getState() == GameState.PENDING || game.getHistory().isEmpty()) {
             gameRepo.release(gameid);
             throw new RuntimeException("No move made yet");
+        }
+
+        if (game.getWhite().getPlayers().stream().filter(p -> p.getId().equals(playerid)).count() == 0
+                && game.getBlack().getPlayers().stream().filter(p -> p.getId().equals(playerid)).count() == 0) {
+            gameRepo.release(gameid);
+            throw new RuntimeException("Player is not part of the game");
         }
 
         FigureMove move = game.getHistory().remove(game.getHistory().size() - 1); // remove last move of history
@@ -215,7 +221,9 @@ public class GameService {
             }
         }).collect(Collectors.toList()));
         game.setCurrentTeam(game.getCurrentTeam().flip()); // flip current Team
-        game.getLastMove().setTime(new Date().getTime()); // update last move
+        if (game.getLastMove() != null) {
+            game.getLastMove().setTime(new Date().getTime()); // update last move
+        }
         Team team = game.getCurrentTeam() == Color.WHITE ? game.getWhite() : game.getBlack();
         if (move.getTo().getFigure() != null) {
             team.getHitFigures().remove(team.getHitFigures().size() - 1); // remove hitted figure
