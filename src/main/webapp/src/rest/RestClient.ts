@@ -91,6 +91,23 @@ export default class RestClient {
         })
     }
 
+    undo(gameid: string, playerid: string): Promise<any> {
+        return fetch(`${api}/${gameid}/undo`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'playerid': playerid
+            },
+            cache: 'no-cache'
+        }).then(resp => {
+            if (resp.ok) {
+                return ""
+            }
+            throw 'Could not make undo'
+        })
+    }
+
     timeout(gameid: string, playerid: string) : Promise<any> {
         return fetch(`${api}/${gameid}/timeout`, {
             method: 'POST',

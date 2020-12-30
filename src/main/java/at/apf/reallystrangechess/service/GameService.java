@@ -210,10 +210,10 @@ public class GameService {
             throw new RuntimeException("No move made yet");
         }
 
-        if (game.getWhite().getPlayers().stream().filter(p -> p.getId().equals(playerid)).count() == 0
-                && game.getBlack().getPlayers().stream().filter(p -> p.getId().equals(playerid)).count() == 0) {
+        Team team = game.getCurrentTeam() == Color.WHITE ? game.getWhite() : game.getBlack();
+        if (!team.getPlayers().stream().filter(p -> p.getId().equals(playerid)).findAny().isPresent()) {
             gameRepo.release(gameid);
-            throw new RuntimeException("Player is not part of the game");
+            throw new RuntimeException("Player is not able to execute an undo");
         }
 
         FigureMove move = game.getHistory().remove(game.getHistory().size() - 1); // remove last move of history
@@ -230,12 +230,12 @@ public class GameService {
         if (game.getLastMove() != null) {
             game.getLastMove().setTime(new Date().getTime()); // update last move
         }
-        Team team = game.getCurrentTeam() == Color.WHITE ? game.getWhite() : game.getBlack();
+
         if (move.getTo().getFigure() != null) {
             team.getHitFigures().remove(team.getHitFigures().size() - 1); // remove hitted figure
         }
         team.setCurrentPlayer( (team.getCurrentPlayer() - 1 + team.getPlayers().size()) % team.getPlayers().size() ); // previous player of previous
-        if (team.getTime() > 0) {
+        if (game.getState() == GameState.FINISHED && team.getTime() != null && team.getTime() > 0) {
             // played time will stay ereased
             game.setState(GameState.PLAYING); // if game was ended, set it to playing (if the team has remaining time)
         }

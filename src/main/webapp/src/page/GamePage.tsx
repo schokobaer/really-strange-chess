@@ -6,6 +6,7 @@ import ChessBoard from "../component/Board";
 import {getUserId, getUserName, soundOn} from "../util/GameRepo";
 import {BaseChessLogic, colFlip} from "../logic/BaseChessLogic";
 import ChessTeam from "../component/Team";
+import Button from "react-bootstrap/Button";
 
 const moveSound = new Audio('sound/move.mp3')
 const hitSound = new Audio('sound/hit.wav')
@@ -145,6 +146,13 @@ class GamePage extends React.Component<Props, State> {
         this.setState({loading: true})
     }
 
+    undo() {
+        this.rest.undo(this.props.gameid, getUserId()!)
+        const game = this.state.game!
+        game.currentTeam = colFlip(game.currentTeam)
+        this.setState({game: game})
+    }
+
     calcTime(team: TeamDto): number | null{
 
         if (team.time === null) {
@@ -193,12 +201,18 @@ class GamePage extends React.Component<Props, State> {
             return <div>No game found</div>
         }
 
-
         const teamColor = this.getTeamColor()
         const teamTop = teamColor === "BLACK" ? this.state.game.white : this.state.game.black
         const teamBottom =  teamColor === "BLACK" ? this.state.game.black : this.state.game.white
 
         const joinable = this.state.game.state === "PENDING" && teamColor === undefined
+
+        let undo = <Fragment></Fragment>
+        if (this.state.game.history.length > 0 && teamColor === this.state.game.currentTeam) {
+            undo = <Fragment>
+                <Button variant="warning" onClick={() => this.undo()}>Undo</Button>
+            </Fragment>
+        }
 
         return <Fragment>
             <ChessTeam
@@ -223,6 +237,8 @@ class GamePage extends React.Component<Props, State> {
                 hitFigures={teamBottom.hitFigures}
                 inCharge={this.isInCharge(teamBottom)}
                 onJoin={joinable ? () => this.join("WHITE") : undefined} />
+
+            {undo}
         </Fragment>
 
       
