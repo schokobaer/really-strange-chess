@@ -22,6 +22,7 @@ class CreatePage extends React.Component<Props, State> {
         timeWhite: '00:05:00',
         timeBlack: '00:05:00',
         time: false,
+        mine: false,
         style: 'CLASSIC'
     }
 
@@ -42,7 +43,15 @@ class CreatePage extends React.Component<Props, State> {
             style: this.state.style,
             team: this.state.color,
             timeWhite: null,
-            timeBlack: null
+            timeBlack: null,
+            mineConfig: null
+        }
+
+        if (this.state.mine) {
+            req.mineConfig = {
+                interval: 5,
+                offset: 10
+            }
         }
 
         if (this.state.time) {
@@ -79,6 +88,9 @@ class CreatePage extends React.Component<Props, State> {
                                 { this.state.time ? <Col><TimePicker maxDetail="second" value={this.state.timeWhite} onChange={(v: TimePickerValue) => this.setState({timeWhite: v})} /></Col> : '' }
                                 { this.state.time ? <Col><TimePicker maxDetail="second" value={this.state.timeBlack} onChange={(v: TimePickerValue) => this.setState({timeBlack: v})} /></Col> : '' }
                             </Row>
+                            <Row>
+                                <Col><Form.Label><input type="checkbox" onChange={e => this.setState({mine: e.target.checked})} checked={this.state.mine} /> Mines</Form.Label></Col>
+                            </Row>
                         </Container>
                     </Form.Group>
                     <Form.Group>
@@ -100,6 +112,7 @@ interface State {
     timeWhite: TimePickerValue
     timeBlack: TimePickerValue
     time: boolean
+    mine: boolean
     style: BoardStyle
 }
 

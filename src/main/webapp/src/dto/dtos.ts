@@ -57,6 +57,12 @@ export interface CreateGameRequest {
     team: Color
     name: string
     style: BoardStyle
+    mineConfig: MineConfig | null
+}
+
+export interface MineConfig {
+    interval: number
+    offset: number
 }
 
 export interface JoinGameRequest {

@@ -8,6 +8,7 @@ public class CreateGameRequest {
     private Color team;
     private String name;
     private BoardStyle style;
+    private MineConfig mineConfig;
 
     public Long getTimeWhite() {
         return timeWhite;
@@ -47,5 +48,34 @@ public class CreateGameRequest {
 
     public void setStyle(BoardStyle style) {
         this.style = style;
+    }
+
+    public MineConfig getMineConfig() {
+        return mineConfig;
+    }
+
+    public void setMineConfig(MineConfig mineConfig) {
+        this.mineConfig = mineConfig;
+    }
+
+    public class MineConfig {
+        private int interval;
+        private int offset;
+
+        public int getInterval() {
+            return interval;
+        }
+
+        public void setInterval(int interval) {
+            this.interval = interval;
+        }
+
+        public int getOffset() {
+            return offset;
+        }
+
+        public void setOffset(int offset) {
+            this.offset = offset;
+        }
     }
 }

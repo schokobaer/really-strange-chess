@@ -1,5 +1,7 @@
 package at.apf.reallystrangechess.model;
 
+import at.apf.reallystrangechess.logic.MineGenerator;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +15,7 @@ public class Game {
     private List<FigureMove> history = new ArrayList<>();
     private List<BoardField> board;
     private GameState state = GameState.PENDING;
+    private MineGenerator mineGenerator;
     // TODO: Add GameResult {winner?: Color, reason?: TIME | CHECKMATE }
 
     public String getId() {
@@ -75,4 +78,11 @@ public class Game {
         return history.isEmpty() ? null : history.get(history.size() - 1);
     }
 
+    public MineGenerator getMineGenerator() {
+        return mineGenerator;
+    }
+
+    public void setMineGenerator(MineGenerator mineGenerator) {
+        this.mineGenerator = mineGenerator;
+    }
 }

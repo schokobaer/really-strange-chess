@@ -1,7 +1,9 @@
 package at.apf.reallystrangechess.service;
 
 import at.apf.reallystrangechess.dto.BoardStyle;
+import at.apf.reallystrangechess.dto.CreateGameRequest;
 import at.apf.reallystrangechess.logic.BaseChessLogic;
+import at.apf.reallystrangechess.logic.MineGenerator;
 import at.apf.reallystrangechess.model.*;
 import at.apf.reallystrangechess.repo.GameRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,7 @@ public class GameService {
     @Autowired
     private NotifyService notifyService;
 
-    public Game createGame(Player player, Long timeWhite, Long timeBlack, Color color, BoardStyle style) {
+    public Game createGame(Player player, Long timeWhite, Long timeBlack, Color color, BoardStyle style, CreateGameRequest.MineConfig mineConfig) {
         Game game = new Game();
         game.setCurrentTeam(Color.WHITE);
         game.setState(GameState.PENDING);
@@ -46,6 +48,10 @@ public class GameService {
 
         game.getWhite().setTime(timeWhite);
         game.getBlack().setTime(timeBlack);
+
+        if (mineConfig != null) {
+            game.setMineGenerator(new MineGenerator(mineConfig.getOffset(), mineConfig.getInterval()));
+        }
 
         gameRepo.add(game);
 
@@ -143,6 +149,27 @@ public class GameService {
         game.setBoard(logic.move(game.getBoard(), from, to)); // change board
         if (team.getTime() != null && game.getLastMove() != null) {
             team.setTime(team.getTime() - neededSeconds); // set remaining time of team
+        }
+
+        // Mine
+        if (game.getMineGenerator() != null) {
+            List<BoardField> board = game.getBoard();
+            // Reduce already given miens
+            board = board.stream().map(f -> {
+                BoardField fn = new BoardField(f.getPosition(), f.getColor(), f.getFigure(), f.getMine());
+                if (f.getMine() != null) {
+                    fn.setMine(fn.getMine() - 1);
+                    if (fn.getMine() == 0) {
+                        fn.setColor(BoardFieldColor.EMPTY);
+                        fn.setFigure(null);
+                        fn.setMine(null);
+                    }
+                }
+                return fn;
+            }).collect(Collectors.toList());
+            // Generate new mine
+            board = game.getMineGenerator().step(board);
+            game.setBoard(board);
         }
 
         team.setCurrentPlayer( (player.getOrder() + 1) % team.getPlayers().size() ); // next player of team

@@ -14,14 +14,16 @@ class ChessField extends React.Component<Props, State> {
 
         const fieldColor = this.props.field.color === "WHITE" ? "field-white" :
                            this.props.field.color === "BLACK" ? "field-black" :
-                           "field-empty"
+                           "field-empty";
 
         let selectField =   this.props.selected === true ? ' fieldselected' :
                             this.props.danger === true ? ' fielddanger' :
                             this.props.hint === true ? ' fieldhint' :
                             this.props.lastMove === true ? ' fieldlastmove' : '';
 
-        return <div className={'field ' + fieldColor} onClick={() => this.props.onClick(this.props.field)}>
+        const mine = this.props.field.mine !== null ? ' fieldmine' : '';
+
+        return <div className={'field ' + fieldColor + mine} onClick={() => this.props.onClick(this.props.field)}>
                    <div className={'fieldselect' + selectField}>
                        <img src={getFigureImgPath(this.props.field.figure)} />
                    </div>
