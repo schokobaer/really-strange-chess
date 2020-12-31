@@ -1,7 +1,9 @@
 # Really Strange Chess
 
 ## Build
-TODO
+```
+./build.sh
+```
 
 ## TODOs
   - Animation for player in charge
@@ -9,7 +11,6 @@ TODO
   - Bauer transformation selection (Dame,Turm,Springer,Laufer,king)
   - step buttons
   - Logging
-  - Build scripts
 
 
 
@@ -27,7 +28,7 @@ TODO
 ## Custom Board
 To use a custom board select the Custom style in the creation wizard, which lets pop up a textfield. Fill the textbox with 3 blocks seperated by empty lines:
  1. The first block specifies the field colors. Each charactar specifies a field. `w` for a white field, `b` for a black field and `.` for an empty field
- 2. The second block specifies the white figures. `t` for turm, `s` for springer, `l` for laufer, `d` for dame and `k` for king.
+ 2. The second block specifies the white figures. `b` for bauer, `t` for turm, `s` for springer, `l` for laufer, `d` for dame and `k` for king.
  3. The last row specifies the black figures. Same concept as the second block.
 
 The following example shows an 6x6:
@@ -56,4 +57,4 @@ tsdkst
 
 ## Known Bugs:
  - Setup Page not saving Data in Localstore
- - Castling if the tower is next to the king (5x5Grid Board)
+ - Castling if the tower is next to the king (5x5Grid Board) -> Tower must be at least 3 fields apart from King
