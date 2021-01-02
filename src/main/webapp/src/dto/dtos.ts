@@ -24,10 +24,12 @@ export type FigureType = 'BAUER' | 'LAUFER' | 'SPRINGER' | 'TURM' | 'DAME' | 'KI
 
 export interface BoardField {
     position: Position
-    color: 'WHITE' | 'BLACK' | 'EMPTY'
+    color: BoardFieldColor
     figure: Figure | null
     mine: number | null
 }
+
+export type BoardFieldColor = 'WHITE' | 'BLACK' | 'EMPTY'
 
 export interface Position {
     x: number

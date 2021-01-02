@@ -33,7 +33,7 @@ class ChessBoard extends React.Component<Props, State> {
         }
         const hints = this.logic.moveableFields(this.props.fields, this.state.selected, this.props.history)
         if (this.containsField(hints, field)) {
-            this.props.onMove(this.state.selected.position, field.position)
+            this.props.onMove!(this.state.selected.position, field.position)
             this.setState({selected: undefined})
             return;
         }
@@ -99,7 +99,7 @@ interface Props {
     color?: Color
     canMove: boolean
     history: Array<FigureMoveDto>
-    onMove: (from: Position, to: Position) => void
+    onMove?: (from: Position, to: Position) => void
 }
 interface State {
     selected?: BoardField

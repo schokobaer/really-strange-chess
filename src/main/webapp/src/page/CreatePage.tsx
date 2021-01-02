@@ -9,6 +9,8 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import TimePicker, {TimePickerValue} from "react-time-picker";
 import {getUserName} from "../util/GameRepo";
+import ChessBoard from "../component/Board";
+import boardFromString from "../util/BoardConverter";
 
 const boardstyles = [
     {value: 'CLASSIC', label: 'Classic'},
@@ -79,8 +81,19 @@ class CreatePage extends React.Component<Props, State> {
         let board : any = ''
         if (this.state.style === "CUSTOM") {
             board = <Form.Group>
-                <Form.Label>Board:</Form.Label>
-                <textarea onChange={e => this.setState({board: e.target.value})}>{this.state.board}</textarea>
+                <Container>
+                    <Row>
+                        <Col>
+                            <textarea
+                                placeholder="Board"
+                                style={{width: '100%', height: '100%', fontFamily: 'monospace'}}
+                                onChange={e => this.setState({board: e.target.value})}>{this.state.board}</textarea>
+                        </Col>
+                        <Col>
+                            <ChessBoard fields={boardFromString(this.state.board)} color={"BLACK"} canMove={false} history={[]} />
+                        </Col>
+                    </Row>
+                </Container>
             </Form.Group>
         }
 
