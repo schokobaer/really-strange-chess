@@ -19,13 +19,13 @@ public class BoardConverter {
         int i = 0;
 
         // board color fields
-        while (true) {
+        while (i < lines.length) {
             String line = lines[i].toLowerCase();
             if (line.isEmpty()) {
                 i++;
                 break;
             }
-            for (int j = 0; j < lines[i].length(); j++) {
+            for (int j = 0; j < line.length(); j++) {
                 BoardFieldColor color = BoardFieldColor.EMPTY;
                 if (line.charAt(j) == 'w') {
                     color = BoardFieldColor.WHITE;
@@ -37,48 +37,21 @@ public class BoardConverter {
             i++;
         }
 
-        // white figures
+        // figures
         int i2 = 0;
-        while (true) {
-            String line = lines[i].toUpperCase();
+        while (i < lines.length) {
+            String line = lines[i];
             if (line.isEmpty()) {
                 i++;
                 break;
             }
-            for (int j = 0; j < lines[i].length(); j++) {
+            for (int j = 0; j < line.length(); j++) {
                 Figure fig = null;
-                final String c = line.charAt(j) + "";
+                final String c = (line.charAt(j) + "").toUpperCase();
                 FigureType type = Stream.of(FigureType.values()).filter(t -> t.getChar().equals(c)).findFirst().orElse(null);
                 if (type != null) {
-                    fig = new Figure(Color.WHITE, type);
-                }
-                Position pos = new Position(j + 1, i2 + 1);
-                Optional<BoardField> field = board.stream().filter(f -> f.getPosition().equals(pos)).findFirst();
-                if (field.isPresent() && fig != null) {
-                    field.get().setFigure(fig);
-                }
-            }
-            i++;
-            i2++;
-        }
-
-        // black figures
-        i2 = 0;
-        while (true) {
-            if (i >= lines.length) {
-                break;
-            }
-            String line = lines[i].toUpperCase();
-            if (line.isEmpty()) {
-                i++;
-                break;
-            }
-            for (int j = 0; j < lines[i].length(); j++) {
-                Figure fig = null;
-                final String c = line.charAt(j) + "";
-                FigureType type = Stream.of(FigureType.values()).filter(t -> t.getChar().equals(c)).findFirst().orElse(null);
-                if (type != null) {
-                    fig = new Figure(Color.BLACK, type);
+                    Color color = c.equals(line.charAt(j) + "") ? Color.BLACK : Color.WHITE;
+                    fig = new Figure(color, type);
                 }
                 Position pos = new Position(j + 1, i2 + 1);
                 Optional<BoardField> field = board.stream().filter(f -> f.getPosition().equals(pos)).findFirst();

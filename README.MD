@@ -12,7 +12,6 @@
   - step buttons
   - Logging
   - Compressed GameDto (BJSON; Only Figures, Emtpy Fields, Mines; Dimension; Conversion of Figures (WB = White Bauer))
-  - Custom Board preview: lowercase=White, uppercase=Black, with default 6x6 Board
   - Really Bad Chess board Styles
 
 

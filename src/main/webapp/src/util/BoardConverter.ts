@@ -1,4 +1,4 @@
-import {BoardField, BoardFieldColor, Figure, FigureType, Position} from "../dto/dtos";
+import {BoardField, BoardFieldColor, Color, Figure, FigureType, Position} from "../dto/dtos";
 import {posEq} from "../logic/BaseChessLogic";
 
 
@@ -27,17 +27,17 @@ export default function boardFromString(str: string): Array<BoardField> {
         i++
     }
 
-    // white figures
+    // figures
     let i2 = 0
     while (i < lines.length) {
-        const line = lines[i].toLowerCase()
+        const line = lines[i]
         if (line.length === 0) {
             i++
             break;
         }
         for (let j = 0; j < line.length; j++) {
             let fig: Figure | null = null
-            const c = line.charAt(j)
+            const c = line.charAt(j).toLowerCase()
             let type: FigureType | null = null
             if (c === 'b') {
                 type = "BAUER"
@@ -53,45 +53,8 @@ export default function boardFromString(str: string): Array<BoardField> {
                 type = "KING"
             }
             if (type != null) {
-                fig = {color: "WHITE", type: type}
-            }
-            const pos: Position = {x: j + 1, y: i2 + 1}
-            const field: BoardField | undefined = board.find(f => posEq(f.position, pos))
-            if (field !== undefined && fig !== null) {
-                field.figure = fig
-            }
-        }
-        i++
-        i2++
-    }
-
-    // black figures
-    i2 = 0
-    while (i < lines.length) {
-        const line = lines[i].toLowerCase()
-        if (line.length === 0) {
-            i++
-            break;
-        }
-        for (let j = 0; j < line.length; j++) {
-            let fig: Figure | null = null
-            const c = line.charAt(j)
-            let type: FigureType | null = null
-            if (c === 'b') {
-                type = "BAUER"
-            } else if (c === 'l') {
-                type = "LAUFER"
-            } else if (c === 's') {
-                type = "SPRINGER"
-            } else if (c === 't') {
-                type = "TURM"
-            } else if (c === 'd') {
-                type = "DAME"
-            } else if (c === 'k') {
-                type = "KING"
-            }
-            if (type != null) {
-                fig = {color: "BLACK", type: type}
+                const color: Color = line.charAt(j) === c ? "WHITE" : "BLACK"
+                fig = {color: color, type: type}
             }
             const pos: Position = {x: j + 1, y: i2 + 1}
             const field: BoardField | undefined = board.find(f => posEq(f.position, pos))
