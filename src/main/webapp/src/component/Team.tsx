@@ -41,7 +41,7 @@ class ChessTeam extends React.Component<Props, State> {
                     <div className="teamCtTop">
                         <div className={"teamplayersCt"}>
                             {this.props.players.map(p => <div className={"teamplayer "}>
-                                {p.order === this.props.currentPlayer ? "👉" : ""}
+                                <span className={"playerPointer" + (p.order === this.props.currentPlayer && this.props.inCharge ? " playerPointerActive" : "")}>{p.order === this.props.currentPlayer ? "👉" : ""}</span>
                                 {p.name}
                             </div>)}
                             {joinBtn}
