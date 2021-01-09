@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rsc
+  labels:
+    app: rsc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rsc
+  template:
+    metadata:
+      labels:
+        app: rsc
+    spec:
+      containers:
+        - name: rsc
+          image: gcr.io/gstochabock/really-strange-chess
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+                
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rsc
+  labels:
+    app: rsc
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: rsc
+  #loadBalancerIP: 35.226.69.126
