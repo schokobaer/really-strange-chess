@@ -1,7 +1,7 @@
 import React, {CSSProperties, Fragment} from 'react';
 import './App.css';
 import WebSocketClient from './rest/WebSocketClient'
-import RestClient from "./rest/RestClient";
+import RoombaRestClient from "./rest/RoombaRestClient";
 import Sidebar from "./component/Sidebar";
 import SystemPage from "./page/SystemPage";
 import RoombaPage from "./page/RoombaPage";
@@ -13,7 +13,7 @@ class App extends React.Component<Props, State> {
     }
 
     ws: WebSocketClient = new WebSocketClient()
-    rest: RestClient = new RestClient()
+    rest: RoombaRestClient = new RoombaRestClient()
 
     initWebSockets() {
         //this.ws.connect()
@@ -31,7 +31,7 @@ class App extends React.Component<Props, State> {
             <div className="pagebody">
                 <Sidebar active={this.state.page} onChange={page => this.setState({page: page})} />
                 { this.state.page === "SYSTEM" && <SystemPage /> }
-                { this.state.page === "ROOMBA" && <RoombaPage /> }
+                { this.state.page === "ROOMBA" && <RoombaPage ws={this.ws} /> }
             </div>
         </div>
     }

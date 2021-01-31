@@ -16,6 +16,14 @@
     margin-left: 10px;
 }
 
+.roomba-select-ct > img {
+    height: 24px;
+    width: 24px;
+    margin-left: 15px;
+    cursor: pointer;
+
+}
+
 .roomba-ct {
     height: 100%;
     display: flex;

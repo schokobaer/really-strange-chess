@@ -6,12 +6,22 @@ import DriveAction from "../component/action/DriveAction";
 import TurnAction from "../component/action/TurnAction";
 import StopAction from "../component/action/StopAction";
 import DriveToAction from "../component/action/DriveToAction";
+import RoombaRestClient from "../rest/RoombaRestClient";
+import WebSocketClient from "../rest/WebSocketClient";
 
 class RoombaPage extends React.Component<Props, State> {
 
     state: State = {
         roombas: ['roomba1', 'roomba2'],
-        selectedRoomba: undefined
+        selectedRoomba: undefined,
+        refreshing: false
+    }
+
+    rest: RoombaRestClient = new RoombaRestClient()
+
+    refreshInstnces() {
+        this.setState({refreshing: true})
+        setTimeout(() => this.setState({refreshing: false}), 3000)
     }
 
     roombaSelected(roombaid: string) {
@@ -38,6 +48,7 @@ class RoombaPage extends React.Component<Props, State> {
         return <div className="roomba-page">
             <div className="roomba-select-ct">
                 Instance: <Select options={this.state.roombas.map(r => {return {value: r, label: r}})} onChange={(v: any) => this.roombaSelected(v.value)} />
+                <img className={"" + (this.state.refreshing && "rotating")} src="/img/animation/refresh.png" onClick={() => this.refreshInstnces()} />
             </div>
 
             <div className="roomba-ct">
@@ -65,10 +76,13 @@ class RoombaPage extends React.Component<Props, State> {
     }
 }
 
-interface Props {}
+interface Props {
+    ws: WebSocketClient
+}
 interface State {
     roombas: Array<string>
     selectedRoomba?: string
+    refreshing: boolean
 }
 
 export default RoombaPage
