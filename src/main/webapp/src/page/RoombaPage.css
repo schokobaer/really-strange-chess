@@ -1,0 +1,63 @@
+.roomba-page {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 10px;
+}
+
+
+.roomba-select-ct {
+    padding: 10px 15px;
+}
+
+.roomba-select-ct > div {
+    width: 300px;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.roomba-ct {
+    height: 100%;
+    display: flex;
+    padding: 0px 10px;
+}
+
+.roomba-ct > div {
+    width: 100%;
+    margin: 10px;
+    border-radius: 5px;
+    border: #333 solid 2px;
+    box-shadow: 0px 0px 10px;
+}
+
+.roomba-ct > div > div:first-child {
+    font-size: 20px;
+    font-weight: bold;
+    border-bottom: #333 solid 2px;
+    padding: 2px 5px;
+}
+
+.roomba-ct > div:first-child > div:first-child {
+    background-color: #4472C4;
+}
+
+.roomba-ct > div:last-child > div:first-child {
+    background-color: #ED7D31;
+}
+
+.roomba-values-ct {
+    padding: 5px;
+}
+
+.roomba-action {
+    border: #333 solid 1px;
+    border-radius: 3px;
+    margin: 10px;
+    padding: 10px;
+    box-shadow: 0px 0px 3px;
+}
+
+.roomba-action button {
+    width: 100%;
+    background-color: #ED7D31;
+}

@@ -16,10 +16,11 @@
 }
 
 .sidebar-entry-active {
-    background-color: #00d4ff;
+    background-color: #4472C4;
+    font-weight: bold;
 }
 
 .sidebar-entry:hover {
     background-color: #0f6674;
-    text-decoration: underline;
+    font-weight: bold;
 }

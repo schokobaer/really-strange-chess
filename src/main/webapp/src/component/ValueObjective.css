@@ -1,0 +1,7 @@
+.value-objective {
+    display: flex;
+}
+
+.value-objective > div:first-child {
+    margin-right: 5px;
+}

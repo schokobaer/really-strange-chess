@@ -1,0 +1,9 @@
+.driveto-action > div {
+    display: flex;
+    margin-bottom: 3px;
+}
+
+.driveto-action input[type="text"] {
+    width: 100%;
+    margin: 0px 5px;
+}
