@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class RoombaRestController {
@@ -14,13 +15,13 @@ public class RoombaRestController {
     private RoombaService roombaService;
 
     @GetMapping("/api/roomba")
-    public List<RoombaDto> getAvailable() {
-        return null;
+    public List<String> getAvailable() {
+        return roombaService.getAll().stream().map(r -> r.getId()).collect(Collectors.toList());
     }
 
     @GetMapping("/api/roomba/{id}")
     public RoombaDto get(@PathVariable String id) {
-        return null;
+        return roombaService.get(id);
     }
 
     @PostMapping("/api/roomba/{id}/drive")

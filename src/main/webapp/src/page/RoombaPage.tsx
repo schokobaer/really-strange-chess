@@ -13,20 +13,29 @@ import RoombaDto from "../dto/RoombaDto"
 class RoombaPage extends React.Component<Props, State> {
 
     state: State = {
-        roombas: ['roomba1', 'roomba2'],
+        roombas: [],
         refreshing: false
     }
 
     rest: RoombaRestClient = new RoombaRestClient()
+    bbc: BroadcastChannel = new BroadcastChannel('roomba')
 
     componentDidMount(): void {
         this.refreshInstnces()
+        this.bbc.onmessage = (msg: MessageEvent) => {
+            console.info('RoombaPage: Received a BCC Msg', msg)
+            const roomba = msg.data as RoombaDto
+            if (this.state.roomba || roomba.id === this.state.roomba) {
+                this.setState({roomba: roomba})
+            }
+        }
     }
 
     componentWillUnmount(): void {
         if (this.state.roomba) {
             this.props.ws.unsubscribeFromRoomba(this.state.roomba.id)
         }
+        this.bbc.close()
     }
 
     refreshInstnces() {
@@ -46,7 +55,7 @@ class RoombaPage extends React.Component<Props, State> {
 
         this.props.ws.subscribeToRoomba(roombaid)
         this.rest.getRoomba(roombaid)
-            .then(roomba => null)
+            .then(roomba => this.setState({roomba: roomba}))
             .catch(err => console.error(err))
     }
 
@@ -95,8 +104,8 @@ class RoombaPage extends React.Component<Props, State> {
                         <ValueObjective description="Location" value={this.state.roomba.location || '?'}/>
                         <ValueObjective description="Battery" value={Math.round(this.state.roomba.battery.energy * 100)} unit={"%"}/>
                         <ValueObjective description="State" value={this.state.roomba.state}/>
-                        <ValueObjective description="Bumped" value={this.state.roomba.bumper.bumped}/>
-                        <ValueObjective description="Grounded" value={this.state.roomba.wheels.grounded}/>
+                        <ValueObjective description="Bumped" value={this.state.roomba.bumper.bumped.toString()}/>
+                        <ValueObjective description="Grounded" value={this.state.roomba.wheels.grounded.toString()}/>
                     </div>
                 </div>
                 <div>

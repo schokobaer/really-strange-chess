@@ -9,22 +9,23 @@ import RoombaPage from "./page/RoombaPage";
 class App extends React.Component<Props, State> {
 
     state: State = {
-        page: "ROOMBA"
+        page: "ROOMBA",
+        ready: false
     }
 
     ws: WebSocketClient = new WebSocketClient()
-    rest: RoombaRestClient = new RoombaRestClient()
 
-    initWebSockets() {
-        //this.ws.connect()
-
+    componentDidMount(): void {
+        this.ws.connect()
+            .then(() => this.setState({ready: true}))
+            .catch(err => console.error(`could not connect to ws: ${err}`))
     }
 
-
-
-
-
     render () {
+
+        if (!this.state.ready) {
+            return <div>Connecting ... </div>
+        }
 
         return <div className="page">
             <div className="header">ITS - Cockpit</div>
@@ -40,6 +41,7 @@ class App extends React.Component<Props, State> {
 interface Props {}
 interface State {
     page: 'SYSTEM' | 'ROOMBA'
+    ready: boolean
 }
 
 export default App;

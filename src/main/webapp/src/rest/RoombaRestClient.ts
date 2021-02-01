@@ -1,4 +1,5 @@
 import {CreateGameRequest, GameDto, JoinGameRequest, MoveRequest} from '../dto/dtos'
+import RoombaDto from "../dto/RoombaDto";
 
 const api = '/api/roomba'
 export default class RoombaRestClient {
@@ -20,8 +21,7 @@ export default class RoombaRestClient {
         })
     }
 
-    // TODO: Needed?
-    getRoomba(roombaid: string): Promise<GameDto> {
+    getRoomba(roombaid: string): Promise<RoombaDto> {
         return fetch(`${api}/${roombaid}`, {
             method: 'GET',
             headers: {
@@ -31,7 +31,7 @@ export default class RoombaRestClient {
         }).then(resp => {
             if (resp.ok) {
                 return resp.json().then(data => {
-                    return data
+                    return data as RoombaDto
                 })
             }
             throw 'Could not load roomba'

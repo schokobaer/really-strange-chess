@@ -10,29 +10,29 @@ export default class WebSocketClient {
 
     private roombaBCC = new BroadcastChannel('roomba')
 
-    connect() {
+    connect(): Promise<Stomp.Frame> {
+
         this.socket = new SockJS('/event/websocket');
         this.client = Stomp.over(this.socket);
         const that = this;
+        const client = this.client
         console.info("Trying to connect to websocket endpoint")
-        this.client.connect({}, function(frame: any) {
-            that.establieshed = true
-            that.connectionCalls.forEach(f => f())
-            console.info("Connect fallback")
 
-            // Subscribe on connect:
-            /*console.info(frame)
-            that.subscribe('/event/lounge', (msg: any) => {
-                console.info("Received a websocket message for lounge")
-                that.loungeBCC.postMessage("update")
-            });*/
-        }, function (err: any) {
-            console.error("Error in WebSocket Connection", err)
-            console.info("Trying to reconnect to WebSocketEndpoint")
-            that.establieshed = false
-            that.connectionCalls = []
-            that.connect()
-        });
+        return new Promise((resolve, fail)=> {
+            client.connect({}, function(frame?: Stomp.Frame) {
+                that.establieshed = true
+                that.connectionCalls.forEach(f => f())
+                console.info("Connect fallback")
+                resolve(frame)
+            }, function (err: any) {
+                console.error("Error in WebSocket Connection", err)
+                console.info("Trying to reconnect to WebSocketEndpoint")
+                that.establieshed = false
+                that.connectionCalls = []
+                that.connect()
+                fail()
+            });
+        })
     }
 
     subscribeToRoomba(roombaid: string) {
