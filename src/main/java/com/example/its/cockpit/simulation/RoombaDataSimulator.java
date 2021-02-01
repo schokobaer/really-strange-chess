@@ -48,13 +48,13 @@ public class RoombaDataSimulator {
         roomba2.getWheels().setSpeed(new SpeedDto());
         roomba2.getWheels().setGrounded(true);
 
-        repo.add(roomba1);
-        repo.add(roomba2);
+        repo.put(roomba1);
+        repo.put(roomba2);
 
         LOGGER.info("Created roomba1 and roomba2");
     }
 
-    @Scheduled(fixedRate = 1000)
+    //@Scheduled(fixedRate = 1000)
     public void simulate() {
 
         if (rnd.nextBoolean()) {

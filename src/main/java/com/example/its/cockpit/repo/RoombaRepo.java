@@ -3,19 +3,18 @@ package com.example.its.cockpit.repo;
 import com.example.its.cockpit.dto.RoombaDto;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class RoombaRepo {
 
-    private List<RoombaDto> data = new ArrayList<>();
+    private Map<String, RoombaDto> data = new HashMap<>();
 
-    public void add(RoombaDto roomba) {
-        data.add(roomba);
+    public void put(RoombaDto roomba) {
+        data.put(roomba.getId(), roomba);
     }
 
-    public List<RoombaDto> getAll() {
-        return data;
+    public Collection<RoombaDto> getAll() {
+        return data.values();
     }
 }
