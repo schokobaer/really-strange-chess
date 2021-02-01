@@ -53,4 +53,5 @@ TSDKLT
  - Setup Page not saving Data in Localstore
  - Castling if the tower is next to the king (5x5Grid, 6x6 Board) -> Tower must be at least 3 fields apart from King
  - If only kings are left -> Patt
+ - Timezone has to be respected for the timers
  - Animation Generator (https://loading.io/icon/)
