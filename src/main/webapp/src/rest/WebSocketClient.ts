@@ -1,14 +1,14 @@
 import SockJS from 'sockjs-client';
-import Stomp, {Frame} from 'stompjs';
+import Stomp from 'stompjs';
 
 export default class WebSocketClient {
-    private socket: any
-    private client: any
+    private socket?: WebSocket
+    private client?: Stomp.Client
     private establieshed = false
     private connectionCalls: Array<Function> = []
-    private subscriptions = new Map<string, any>()
+    private subscriptions = new Map<string, Stomp.Subscription>()
 
-    private roombaBCC = new BroadcastChannel('game')
+    private roombaBCC = new BroadcastChannel('roomba')
 
     connect() {
         this.socket = new SockJS('/event/websocket');
@@ -37,7 +37,7 @@ export default class WebSocketClient {
 
     subscribeToRoomba(roombaid: string) {
         console.info('WebSocketClient subscribes to roomba ' + roombaid)
-        this.subscribe(`/event/roomba/${roombaid}`, (msg: Frame) => {
+        this.subscribe(`/event/roomba/${roombaid}`, (msg: Stomp.Message) => {
             console.info("Received a websocket message for roomba " + roombaid)
             const game = JSON.parse(msg.body)
             console.info(game)
@@ -45,10 +45,15 @@ export default class WebSocketClient {
         })
     }
 
+    unsubscribeFromRoomba(roombaid: string) {
+        const sub = this.subscriptions.get(`/event/roomba/${roombaid}`)
+        sub?.unsubscribe()
+    }
 
-    private subscribe(path: string, msgHandler: Function) {
+
+    private subscribe(path: string, msgHandler: (msg: Stomp.Message) => any) {
         const f = () => {
-            let sub = this.client.subscribe(path, msgHandler);
+            const sub = this.client!.subscribe(path, msgHandler);
             console.info("Subscribing for topic " + path)
             this.subscriptions.set(path, sub);
         }

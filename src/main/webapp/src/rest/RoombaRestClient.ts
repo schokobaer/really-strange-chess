@@ -3,7 +3,7 @@ import {CreateGameRequest, GameDto, JoinGameRequest, MoveRequest} from '../dto/d
 const api = '/api/roomba'
 export default class RoombaRestClient {
 
-    listAvailableRoombas(): Promise<Array<GameDto>> {
+    listAvailableRoombas(): Promise<Array<string>> {
         return fetch(`${api}/`, {
             method: 'GET',
             headers: {
@@ -13,7 +13,7 @@ export default class RoombaRestClient {
         }).then(resp => {
             if (resp.ok) {
                 return resp.json().then(data => {
-                    return data as Array<GameDto> // TODO: RoombaDto
+                    return data as Array<string>
                 })
             }
             throw 'Could not load available roombas'
@@ -72,7 +72,7 @@ export default class RoombaRestClient {
         })
     }
 
-    stop(roombaid: string, angle: number): Promise<any> {
+    stop(roombaid: string): Promise<any> {
         return fetch(`${api}/${roombaid}/stop`, {
             method: 'POST',
             headers: {

@@ -8,40 +8,74 @@ import StopAction from "../component/action/StopAction";
 import DriveToAction from "../component/action/DriveToAction";
 import RoombaRestClient from "../rest/RoombaRestClient";
 import WebSocketClient from "../rest/WebSocketClient";
+import RoombaDto from "../dto/RoombaDto"
 
 class RoombaPage extends React.Component<Props, State> {
 
     state: State = {
         roombas: ['roomba1', 'roomba2'],
-        selectedRoomba: undefined,
         refreshing: false
     }
 
     rest: RoombaRestClient = new RoombaRestClient()
 
+    componentDidMount(): void {
+        this.refreshInstnces()
+    }
+
+    componentWillUnmount(): void {
+        if (this.state.roomba) {
+            this.props.ws.unsubscribeFromRoomba(this.state.roomba.id)
+        }
+    }
+
     refreshInstnces() {
         this.setState({refreshing: true})
-        setTimeout(() => this.setState({refreshing: false}), 3000)
+        this.rest.listAvailableRoombas()
+            .then(data => {
+                this.setState({roombas: data})
+            })
+            .catch(err => console.error(err))
+            .finally(() => this.setState({refreshing: false}))
     }
 
     roombaSelected(roombaid: string) {
-        this.setState({selectedRoomba: roombaid})
+        if (this.state.roomba) {
+            this.props.ws.unsubscribeFromRoomba(this.state.roomba.id)
+        }
+
+        this.props.ws.subscribeToRoomba(roombaid)
+        this.rest.getRoomba(roombaid)
+            .then(roomba => null)
+            .catch(err => console.error(err))
     }
 
     drive(speed: number) {
-
+        if (this.state.roomba) {
+            this.rest.drive(this.state.roomba.id, speed)
+                .catch(err => console.error(err))
+        }
     }
 
     turn(angle: number) {
-
+        if (this.state.roomba) {
+            this.rest.turn(this.state.roomba.id, angle)
+                .catch(err => console.error(err))
+        }
     }
 
     stop() {
-
+        if (this.state.roomba) {
+            this.rest.stop(this.state.roomba.id)
+                .catch(err => console.error(err))
+        }
     }
 
     driveTo(target: string) {
-
+        if (this.state.roomba) {
+            this.rest.driveTo(this.state.roomba.id, target)
+                .catch(err => console.error(err))
+        }
     }
 
     render () {
@@ -51,26 +85,29 @@ class RoombaPage extends React.Component<Props, State> {
                 <img className={"" + (this.state.refreshing && "rotating")} src="/img/animation/refresh.png" onClick={() => this.refreshInstnces()} />
             </div>
 
+            {this.state.roomba !== undefined &&
             <div className="roomba-ct">
                 <div>
                     <div>Data</div>
                     <div className="roomba-values-ct">
-                        <ValueObjective description="Wheel Left" value={50} unit={"rpm"} />
-                        <ValueObjective description="Wheel Right" value={50} unit={"rpm"} />
-                        <ValueObjective description="Location" value={"?"} />
-                        <ValueObjective description="Battery" value={54.4} unit={"%"} />
-                        <ValueObjective description="State" value={"IDLE"} />
+                        <ValueObjective description="Wheel Left" value={this.state.roomba.wheels.speed.left} unit={"rpm"}/>
+                        <ValueObjective description="Wheel Right" value={this.state.roomba.wheels.speed.right} unit={"rpm"}/>
+                        <ValueObjective description="Location" value={this.state.roomba.location || '?'}/>
+                        <ValueObjective description="Battery" value={Math.round(this.state.roomba.battery.energy * 100)} unit={"%"}/>
+                        <ValueObjective description="State" value={this.state.roomba.state}/>
+                        <ValueObjective description="Bumped" value={this.state.roomba.bumper.bumped}/>
+                        <ValueObjective description="Grounded" value={this.state.roomba.wheels.grounded}/>
                     </div>
                 </div>
                 <div>
                     <div>Actions</div>
-
                     <DriveAction onDrive={speed => this.drive(speed)} />
                     <TurnAction onTurn={angle => this.turn(angle)} />
                     <StopAction onStop={() => this.stop()} />
                     <DriveToAction onDriveTo={target => this.driveTo(target)} />
                 </div>
             </div>
+            }
 
         </div>
     }
@@ -81,7 +118,7 @@ interface Props {
 }
 interface State {
     roombas: Array<string>
-    selectedRoomba?: string
+    roomba?: RoombaDto
     refreshing: boolean
 }
 

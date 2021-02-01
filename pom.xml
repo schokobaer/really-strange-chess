@@ -8,17 +8,21 @@
 		<version>2.4.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>at.apf.reallystrangechess</groupId>
-	<artifactId>really-strange-chess</artifactId>
+	<groupId>com.example</groupId>
+	<artifactId>its-cockpit</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>really-strange-chess</name>
-	<description>Backend Server for Really Strange Chess</description>
+	<name>its-cockpit</name>
+	<description>Demo project for Spring Boot</description>
 
 	<properties>
 		<java.version>11</java.version>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
